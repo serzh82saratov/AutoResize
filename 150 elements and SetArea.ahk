@@ -1,6 +1,7 @@
 #SingleInstance Force
 #NoEnv
 SetBatchLines -1
+; #Include <AutoResize>
 
 Gui, +Resize
 
