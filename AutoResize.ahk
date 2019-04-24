@@ -1,7 +1,7 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 1.02
+	;  версия - 1.03
 	;  25.04.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	
@@ -42,7 +42,7 @@ Class AutoResize
 			If v.Section
 				for k2, v2 in ["x", "y", "w", "h"]
 					this.pr[v2 "section"] := this.pr[v2 "p"]
-			hDWP := this.DeferWindowPos(hDWP, v.CH, v.M, this.pr.xp + this.A["cLeft"], this.pr.yp + this.A["cTop"], this.pr.wp, this.pr.hp, 0)  
+			hDWP := this.DeferWindowPos(hDWP, v.CH, v.M, this.pr.xp + this.A["cLeft"], this.pr.yp + this.A["cTop"], this.pr.wp, this.pr.hp)  
 		}
 		this.EndDeferWindowPos(hDWP)
 	}
