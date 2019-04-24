@@ -3,6 +3,7 @@ Class AutoResize
 	;  автор - serzh82saratov
 	;  версия - 1.02
 	;  25.04.2019
+	;  https://github.com/serzh82saratov/AutoResize/blob/master/AutoResize.ahk
 	
 	__New(Gui, Options = "") {
 		If !WinExist("ahk_id" Gui)
