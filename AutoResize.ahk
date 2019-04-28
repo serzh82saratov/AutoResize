@@ -1,9 +1,11 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 1.04
+	;  версия - 1.05
 	;  29.04.2019
 	;  https://github.com/serzh82saratov/AutoResize
+	
+	Static types := ["x", "y", "w", "h"]
 	
 	__New(Gui, Options = "") { 
 		Gui, %Gui%:+HWNDhGui 
@@ -20,7 +22,7 @@ Class AutoResize
 			GuiControlGet, Hwnd, % this.A.Gui ":Hwnd", % Control
 		a := {CH:Hwnd, CN:Control, F:(Ex ~= "D" ? SWP_NOZORDER|SWP_NOCOPYBITS : SWP_NOZORDER), Section:!!(Ex ~= "S")}
 		b := StrSplit(Options, ",")
-		for k, type in ["x", "y", "w", "h"]
+		for k, type in this.types
 		{
 			a[type] := []
 			for k2, word in StrSplit(b[k], "+")
@@ -59,9 +61,9 @@ Class AutoResize
 			this.ps.x := this.EvalPos("x", v.x, "w")
 			this.ps.y := this.EvalPos("y", v.y, "h")
 			
-			for k2, v2 in ["x", "y", "w", "h"]
-				this.ps[v2 "p"] := this.ps[v2]
-				, v.Section && this.ps[v2 "s"] := this.ps[v2]
+			for k2, type in this.types
+				this.ps[type "p"] := this.ps[type]
+				, v.Section && this.ps[type "s"] := this.ps[type]
 				
 			hDWP := this.DeferWindowPos(hDWP, v.CH, v.F, this.ps.x + this.s.cLeft, this.ps.y + this.s.cTop, this.ps.w, this.ps.h)
 		}
