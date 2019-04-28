@@ -1,7 +1,7 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 1.05
+	;  версия - 1.06
 	;  29.04.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	
@@ -27,9 +27,9 @@ Class AutoResize
 			a[type] := []
 			for k2, word in StrSplit(b[k], "+")
 			{
-				If (word ~= "S)^-?\d+$") ;	Num
+				If (word ~= "S)^-?\d+$") ;	-, Num
 					a[type].Push(["Num", word, 1])
-				Else If RegExMatch(word, "S)^(?<s>-)?r(?<d>\d+)$", _)  ;	rNum
+				Else If RegExMatch(word, "S)^(?<s>-)?r(?<d>\d+)$", _)  ;	-, rNum
 					a[type].Push(["R", _d, (_s ? -1 : 1)]) 
 				Else If RegExMatch(word, "S)^(?<d>(x|y))$", _)  ;	x, y
 					a[type].Push(["XY", _d])
@@ -39,10 +39,10 @@ Class AutoResize
 					a[type].Push(["N", _d, 1])
 				Else If RegExMatch(word, "S)^(?<d>(x|y)so)$", _)  ;	xso, yso
 					a[type].Push(["SO"]) 
-				Else If RegExMatch(word, "S)(?<s>-)?(?<d>(w|h)(p|s)?)(?<n>\d+(\.\d+)?)?$", _)  ;	w, -w, wp, -wp, ws, -ws, h, -h, hp, -hp, hs, -hs and Num
+				Else If RegExMatch(word, "S)(?<s>-)?(?<d>(w|h)(p|s)?)(?<n>\d+(\.\d+)?)?$", _)  ;	-, w, wp, ws, h, hp, hs and Number
 					a[type].Push(["WH", _d, (_s ? -1 : 1) * (_n ? _n : 1)])
 				Else
-					Throw Exception("Invalid option " Format("{:U}", type) " member: """ word """", -1)
+					Throw Exception("Invalid option """ Format("{:U}", type) """ member: """ word """", -1)
 			}
 		}
 		this.A.B.Push(a)
