@@ -1,1 +1,1 @@
-# AutoResize
+# Class AutoResize
