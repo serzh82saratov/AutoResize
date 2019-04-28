@@ -1,17 +1,16 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 1.03
-	;  25.04.2019
+	;  версия - 1.04
+	;  29.04.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	
-	__New(Gui, Options = "") {
-		If !WinExist("ahk_id" Gui)
-			 Gui, %Gui%:+HWNDhGui
-		this.A := {xm:0, ym:0, Gui:Gui, hGui:hGui, cLeft:0, cTop:0, cRight:0, cBottom:0, B:{}}
-		this.pr := {}, this.s := {}
+	__New(Gui, Options = "") { 
+		Gui, %Gui%:+HWNDhGui 
+		this.A := {Gui:Gui, hGui:hGui, B:{}}
+		this.ps := {xm:0, ym:0}, this.s := {cLeft:0, cTop:0, cRight:0, cBottom:0}
 		for k, v in ["xm", "ym"]
-			RegExMatch(Options, "(?<Key>" v ")(?<Value>\d+)", o), this.A[oKey] := oValue 
+			RegExMatch(Options, "(?<Key>" v ")(?<Value>\d+)", _), this.ps[_Key] := _Value 
 	}
 	Item(Control, Options, Ex = "") {
 		Static SWP_NOZORDER := 0x0004, SWP_NOCOPYBITS := 0x0100
@@ -19,80 +18,91 @@ Class AutoResize
 		Options := StrReplace(Options, "-", "+-")
 		If (Control + 0 = "") || (0, Hwnd := Control)
 			GuiControlGet, Hwnd, % this.A.Gui ":Hwnd", % Control
-		a := {CH:Hwnd, CN:Control, M:(Ex ~= "Draw" ? SWP_NOZORDER|SWP_NOCOPYBITS : SWP_NOZORDER), Section:!!(Ex ~= "Section")}
+		a := {CH:Hwnd, CN:Control, F:(Ex ~= "D" ? SWP_NOZORDER|SWP_NOCOPYBITS : SWP_NOZORDER), Section:!!(Ex ~= "S")}
 		b := StrSplit(Options, ",")
-		for k, v in ["x", "y", "w", "h"]
-			a[v] := StrSplit(b[k], "+")
+		for k, type in ["x", "y", "w", "h"]
+		{
+			a[type] := []
+			for k2, word in StrSplit(b[k], "+")
+			{
+				If (word ~= "S)^-?\d+$") ;	Num
+					a[type].Push(["Num", word, 1])
+				Else If RegExMatch(word, "S)^(?<s>-)?r(?<d>\d+)$", _)  ;	rNum
+					a[type].Push(["R", _d, (_s ? -1 : 1)]) 
+				Else If RegExMatch(word, "S)^(?<d>(x|y))$", _)  ;	x, y
+					a[type].Push(["XY", _d])
+				Else If (word = "o")  ;	o
+					a[type].Push(["O"])
+				Else If RegExMatch(word, "S)^(?<d>(x|y)(m|p|s))$", _)  ;	xm, ym, xp, yp, xs, ys
+					a[type].Push(["N", _d, 1])
+				Else If RegExMatch(word, "S)^(?<d>(x|y)so)$", _)  ;	xso, yso
+					a[type].Push(["SO"]) 
+				Else If RegExMatch(word, "S)(?<s>-)?(?<d>(w|h)(p|s)?)(?<n>\d+(\.\d+)?)?$", _)  ;	w, -w, wp, -wp, ws, -ws, h, -h, hp, -hp, hs, -hs and Num
+					a[type].Push(["WH", _d, (_s ? -1 : 1) * (_n ? _n : 1)])
+				Else
+					Throw Exception("Invalid option " Format("{:U}", type) " member: """ word """", -1)
+			}
+		}
 		this.A.B.Push(a)
 	}
 	Resize(W = "", H = "") {
+		; Start := A_TickCount
 		If (W = "")
-			this.GetClientSize(this.A.hGui, W, H) 
-		this.s.cw := W - this.A.xm * 2 - this.A.cLeft - this.A.cRight
-		this.s.ch := H - this.A.ym * 2 - this.A.cTop - this.A.cBottom
+			this.GetClientSize(this.A.hGui, W, H)
+		this.s.cw := W - this.ps.xm * 2 - this.s.cLeft - this.s.cRight
+		this.s.ch := H - this.ps.ym * 2 - this.s.cTop - this.s.cBottom
 		hDWP := this.BeginDeferWindowPos(this.A.B.Count())
 		for k, v in this.A.B
 		{
-			this.pr.prwp := this.pr.wp
-			this.pr.prhp := this.pr.hp
-			this.pr.wp := this.EvalSize("w", v.w)
-			this.pr.hp := this.EvalSize("h", v.h)
-			this.pr.xp := this.EvalPos("x", v.x)
-			this.pr.yp := this.EvalPos("y", v.y)
-			If v.Section
-				for k2, v2 in ["x", "y", "w", "h"]
-					this.pr[v2 "section"] := this.pr[v2 "p"]
-			hDWP := this.DeferWindowPos(hDWP, v.CH, v.M, this.pr.xp + this.A["cLeft"], this.pr.yp + this.A["cTop"], this.pr.wp, this.pr.hp)  
+			this.ps.w := this.EvalSize("w", v.w)
+			this.ps.h := this.EvalSize("h", v.h)
+			this.ps.x := this.EvalPos("x", v.x, "w")
+			this.ps.y := this.EvalPos("y", v.y, "h")
+			
+			for k2, v2 in ["x", "y", "w", "h"]
+				this.ps[v2 "p"] := this.ps[v2]
+				, v.Section && this.ps[v2 "s"] := this.ps[v2]
+				
+			hDWP := this.DeferWindowPos(hDWP, v.CH, v.F, this.ps.x + this.s.cLeft, this.ps.y + this.s.cTop, this.ps.w, this.ps.h)
 		}
 		this.EndDeferWindowPos(hDWP)
+		; ToolTip %  A_TickCount - Start
 	}
-	EvalPos(n, a) {
-		s := n = "x" ? "w" : "h", m := 1, ret := 0
+	EvalPos(n, a, s, m = 1, ret = 0) { 
 		for k, v in a
 		{
-			If (v ~= "S)^-?\d+$") ;	Num
-				ret += (v * m)
-			Else If RegExMatch(v, "S)^(?<s>-)?r(?<d>\d+)$", _)  ;	rNum, -rNum
-				ret += (this.s["c" s] * (_d / 1000)) * (_s ? -1 : 1) * m
-			Else If RegExMatch(v, "S)^(?<s>-)?(?<d>(x|y)m)$", _)  ;	xm, -xm, ym, -ym
-				ret += this.A[_d] * (_s ? -1 : 1) * m
-			Else If (k = 1)
-			{  
-				If (v = n "p")  ;	xp, yp
-					ret := this.pr[n "p"]
-				Else If (v = n)  ;	x, y
-					ret := this.pr[n "p"] + this.pr["pr" s "p"]
-				Else If (v = "o")  ;	o
-					ret := this.A[n "m"] + this.s["c" s] - this.pr[s "p"], m := -1
-				Else If (v = n "s")  ;	xs, ys
-					ret := this.pr[n "section"]
-				Else If (v = n "so")  ;	xso, yso
-					ret := this.pr[n "section"] + this.pr[s "section"]
-			} 
-			Else If RegExMatch(v, "S)(?<s>-)?(?<d>(w|h))(?<pr>p)?$", _)  ;	w, -w, wp, -wp, h, -h, hp, -hp
-				ret += this.pr[(_pr ? "pr" : "") _d "p"] * (_s ? -1 : 1) * m
-			Else If RegExMatch(v, "S)(?<s>-)?(?<d>(w|h))s$", _)  ;	ws, -ws, hs, -hs
-				ret += this.pr[_d "section"] * (_s ? -1 : 1) * m
+			If (v[1] = "Num")
+				ret += v[2] * v[3] * m
+			Else If (v[1] = "R")
+				ret += (this.s["c" s] * (v[2] / 1000)) * v[3] * m
+			Else If (v[1] = "XY")
+				ret := this.ps[n] + this.ps[s]
+			Else If (v[1] = "WH")
+				ret += this.ps[v[2]] * v[3] * m
+			Else If (v[1] = "N")
+				ret += this.ps[v[2]]
+			Else If (v[1] = "O")
+				ret := this.ps[n "m"] + this.s["c" s] - this.ps[s], m := -1 
+			Else If (v[1] = "SO")
+				ret := this.ps[n "s"] + this.ps[s "s"]
 		} 
 		Return ret
 	}
-	EvalSize(n, a) {
-		for k, v in a, ret := 0
+	EvalSize(n, a, ret = 0) {
+		for k, v in a
 		{
-			If (v ~= "S)^-?\d+$") ;	Num
-				ret += v
-			Else If RegExMatch(v, "S)^(?<s>-)?r(?<d>\d+)$", _)  ;	rNum, -rNum
-				ret += this.s["c" n] * (_d / 1000) * (_s ? -1 : 1)
-			Else If (v = n "p")  ;	wp, hp
-				ret += this.pr["pr" n "p"]
-			Else If (v = n "s")  ;	ws, hs
-				ret += this.pr[n "section"] 
+			If (v[1] = "Num")
+				ret += v[2]
+			Else If (v[1] = "R")
+				ret += this.s["c" n] * (v[2] / 1000) * v[3]
+			Else If (v[1] = "WH")
+				ret += this.ps[v[2]] * v[3]
 		}
 		Return ret
 	}
 	SetArea(cLeft = 0, cTop = 0, cRight = 0, cBottom = 0) {
-		this.A.cLeft := cLeft, this.A.cTop := cTop
-		this.A.cRight := cRight, this.A.cBottom := cBottom
+		this.s.cLeft := cLeft, this.s.cTop := cTop
+		this.s.cRight := cRight, this.s.cBottom := cBottom
 	}
 	GetClientSize(hwnd, ByRef w, ByRef h) {
 		Static _ := VarSetCapacity(pwi, 60, 0)
