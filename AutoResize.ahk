@@ -1,16 +1,19 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 1.06
-	;  29.04.2019
+	;  версия - 1.07
+	;  02.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	
 	Static types := ["x", "y", "w", "h"]
 	
 	__New(Gui, Options = "") { 
-		Gui, %Gui%:+HWNDhGui 
+		Gui, %Gui%:+HWNDhGui
 		this.A := {Gui:Gui, hGui:hGui, B:{}}
 		this.ps := {xm:0, ym:0}, this.s := {cLeft:0, cTop:0, cRight:0, cBottom:0}
+		this.Round := ObjBindMethod(this, "Return")
+		If RegExMatch(Options, "(?<d>(Floor|Ceil|Round))", _)   ;	Floor Ceil Round
+			this.Round := Func(_d)
 		for k, v in ["xm", "ym"]
 			RegExMatch(Options, "(?<Key>" v ")(?<Value>\d+)", _), this.ps[_Key] := _Value 
 	}
@@ -20,7 +23,7 @@ Class AutoResize
 		Options := StrReplace(Options, "-", "+-")
 		If (Control + 0 = "") || (0, Hwnd := Control)
 			GuiControlGet, Hwnd, % this.A.Gui ":Hwnd", % Control
-		a := {CH:Hwnd, CN:Control, F:(Ex ~= "D" ? SWP_NOZORDER|SWP_NOCOPYBITS : SWP_NOZORDER), Section:!!(Ex ~= "S")}
+		a := {CH:Hwnd, CN:Control, F:(Ex ~= "Draw" ? SWP_NOZORDER|SWP_NOCOPYBITS : SWP_NOZORDER), Section:!!(Ex ~= "Section")}
 		b := StrSplit(Options, ",")
 		for k, type in this.types
 		{
@@ -42,13 +45,12 @@ Class AutoResize
 				Else If RegExMatch(word, "S)(?<s>-)?(?<d>(w|h)(p|s)?)(?<n>\d+(\.\d+)?)?$", _)  ;	-, w, wp, ws, h, hp, hs and Number
 					a[type].Push(["WH", _d, (_s ? -1 : 1) * (_n ? _n : 1)])
 				Else
-					Throw Exception("Invalid option """ Format("{:U}", type) """ member: """ word """", -1)
+					Throw Exception("Class AutoResize invalid option """ Format("{:U}", type) """ member: """ word """", -1)
 			}
 		}
 		this.A.B.Push(a)
 	}
 	Resize(W = "", H = "") {
-		; Start := A_TickCount
 		If (W = "")
 			this.GetClientSize(this.A.hGui, W, H)
 		this.s.cw := W - this.ps.xm * 2 - this.s.cLeft - this.s.cRight
@@ -59,7 +61,7 @@ Class AutoResize
 			this.ps.w := this.EvalSize("w", v.w)
 			this.ps.h := this.EvalSize("h", v.h)
 			this.ps.x := this.EvalPos("x", v.x, "w")
-			this.ps.y := this.EvalPos("y", v.y, "h")
+			this.ps.y := this.EvalPos("y", v.y, "h") 
 			
 			for k2, type in this.types
 				this.ps[type "p"] := this.ps[type]
@@ -68,15 +70,14 @@ Class AutoResize
 			hDWP := this.DeferWindowPos(hDWP, v.CH, v.F, this.ps.x + this.s.cLeft, this.ps.y + this.s.cTop, this.ps.w, this.ps.h)
 		}
 		this.EndDeferWindowPos(hDWP)
-		; ToolTip %  A_TickCount - Start
 	}
-	EvalPos(n, a, s, m = 1, ret = 0) { 
+	EvalPos(n, a, s, m = 1, ret = 0) {
 		for k, v in a
-		{
+		{ 
 			If (v[1] = "Num")
 				ret += v[2] * v[3] * m
-			Else If (v[1] = "R")
-				ret += (this.s["c" s] * (v[2] / 1000)) * v[3] * m
+			Else If (v[1] = "R") 
+				ret += this.Round.Call((this.s["c" s] * (v[2] / 1000)) * v[3] * m)
 			Else If (v[1] = "XY")
 				ret := this.ps[n] + this.ps[s]
 			Else If (v[1] = "WH")
@@ -84,7 +85,7 @@ Class AutoResize
 			Else If (v[1] = "N")
 				ret += this.ps[v[2]]
 			Else If (v[1] = "O")
-				ret := this.ps[n "m"] + this.s["c" s] - this.ps[s], m := -1 
+				ret := this.ps[n "m"] + this.s["c" s] - this.ps[s], m := -1
 			Else If (v[1] = "SO")
 				ret := this.ps[n "s"] + this.ps[s "s"]
 		} 
@@ -95,8 +96,8 @@ Class AutoResize
 		{
 			If (v[1] = "Num")
 				ret += v[2]
-			Else If (v[1] = "R")
-				ret += this.s["c" n] * (v[2] / 1000) * v[3]
+			Else If (v[1] = "R") 
+				ret += this.Round.Call(this.s["c" n] * (v[2] / 1000) * v[3])
 			Else If (v[1] = "WH")
 				ret += this.ps[v[2]] * v[3]
 		}
@@ -123,5 +124,8 @@ Class AutoResize
 	}
 	EndDeferWindowPos(hDWP) {
 		DllCall("EndDeferWindowPos", "Ptr", hDWP)
+	}
+	Return(n) {
+		Return n
 	}
 }
