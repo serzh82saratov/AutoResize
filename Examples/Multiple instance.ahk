@@ -1,5 +1,5 @@
 #SingleInstance Force
-#NoEnv 
+#NoEnv
 SetBatchLines -1
 ; #Include <AutoResize>
 
@@ -13,20 +13,20 @@ ex1 := New AutoResize(1, "xm10 ym10")
 ex1.Item("EL1", "xm, ym, r450, r200")
 ex1.Item("EL2", "o, yp, wp, hp")
 
-ex1.Item("EL3", "xm, o, r150, r300", "S")
+ex1.Item("EL3", "xm, o, r150, r300", "Section")
 ex1.Item("EL4", "o, ys, ws, hs")
 ex1.Item("EL5", "xso + 10, o + r100, r700 - 20, r100")
 
-ex1.Item("EL6", "xm + r400, ym + r400, r200, r200", "S")
+ex1.Item("EL6", "xm + r400, ym + r400, r200, r200", "Section")
 ex1.Item("EL7", "xs - w, ys - h, 20, 30")
-ex1.Item("EL8", "xs - w, yso, wp, hp") 
+ex1.Item("EL8", "xp, yso, wp, hp")
 ex1.Item("EL9", "xso, yso, wp, hp")
-ex1.Item("EL10", "xso, ys - h, wp, hp")
+ex1.Item("EL10", "xp, ys - h, wp, hp")
 
 
 ex2 := New AutoResize(1, "ym20")
 
-ex2.Item("EL1", "xm, ym, r250, r333", "S")
+ex2.Item("EL1", "xm, ym, r250, r333", "Section")
 ex2.Item("EL2", "x, yp, wp, hp")
 ex2.Item("EL3", "x, yp, wp, hp")
 ex2.Item("EL4", "x, yp, wp, hp")
