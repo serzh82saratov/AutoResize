@@ -12,7 +12,7 @@ Class AutoResize
 		this.A := {Gui:Gui, hGui:hGui, B:{}}
 		this.ps := {xm:0, ym:0}, this.s := {cLeft:0, cTop:0, cRight:0, cBottom:0}
 		this.Round := ObjBindMethod(this, "Return")
-		If RegExMatch(Options, "(?<d>(Floor|Ceil|Round))", _)   ;	Floor Ceil Round
+		If RegExMatch(Options, "(?<d>(Floor|Ceil|Round))", _)   ;	< Floor, > Ceil, <> Round
 			this.Round := Func(_d)
 		for k, v in ["xm", "ym"]
 			RegExMatch(Options, "(?<Key>" v ")(?<Value>\d+)", _), this.ps[_Key] := _Value
@@ -34,13 +34,13 @@ Class AutoResize
 					a[type].Push(["Num", word, 1])
 				Else If RegExMatch(word, "S)^(?<s>-)?r(?<d>\d+)$", _)  ;	-, rNum
 					a[type].Push(["R", _d, (_s ? -1 : 1)]) 
-				Else If (k < 3) && RegExMatch(word, "S)^(?<d>(x|y))$", _)  ;	x, y
+				Else If (k < 3) && (k2 = 1) && RegExMatch(word, "S)^(?<d>(x|y))$", _)  ;	x, y
 					a[type].Push(["XY", _d])
-				Else If (k < 3) && (word = "o")  ;	o
+				Else If (k < 3) && (k2 = 1) && (word = "o")  ;	o
 					a[type].Push(["O"])
 				Else If (k < 3) && RegExMatch(word, "S)^(?<d>(x|y)(m|p|s))$", _)  ;	xm, ym, xp, yp, xs, ys
 					a[type].Push(["N", _d, 1])
-				Else If (k < 3) && RegExMatch(word, "S)^(?<d>(x|y)so)$", _)  ;	xso, yso
+				Else If (k < 3) && (k2 = 1) && RegExMatch(word, "S)^(?<d>(x|y)so)$", _)  ;	xso, yso
 					a[type].Push(["SO"]) 
 				Else If RegExMatch(word, "S)(?<s>-)?(?<d>(w|h)(p|s)?)(?<n>\d+(\.\d+)?)?$", _)  ;	-, w, wp, ws, h, hp, hs and Number
 					a[type].Push(["WH", _d, (_s ? -1 : 1) * (_n ? _n : 1)])
@@ -61,7 +61,7 @@ Class AutoResize
 			this.ps.w := this.EvalSize("w", v.w)
 			this.ps.h := this.EvalSize("h", v.h)
 			this.ps.x := this.EvalPos("x", v.x, "w")
-			this.ps.y := this.EvalPos("y", v.y, "h") 
+			this.ps.y := this.EvalPos("y", v.y, "h")
 			
 			for k2, type in this.types
 				this.ps[type "p"] := this.ps[type]
@@ -76,7 +76,7 @@ Class AutoResize
 		{ 
 			If (v[1] = "Num")
 				ret += v[2] * v[3] * m
-			Else If (v[1] = "R") 
+			Else If (v[1] = "R")
 				ret += this.Round.Call((this.s["c" s] * (v[2] / 1000)) * v[3] * m)
 			Else If (v[1] = "XY")  ;	first
 				ret := this.ps[n] + this.ps[s]
