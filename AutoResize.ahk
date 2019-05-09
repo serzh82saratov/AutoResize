@@ -1,7 +1,7 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 1.08
+	;  версия - 1.09
 	;  09.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	
@@ -42,6 +42,8 @@ Class AutoResize
 					a[type].Push(["N", _d, 1])
 				Else If (k < 3) && (k2 = 1) && RegExMatch(word, "S)^(?<d>(x|y)so)$", _)  ;	xso, yso
 					a[type].Push(["SO"]) 
+				Else If (k > 2) && (k2 = 1) && (word = "ro")  ;	RO
+					a[type].Push(["RO"])
 				Else If RegExMatch(word, "S)(?<s>-)?(?<d>(w|h)(p|s)?)(?<n>\d+(\.\d+)?)?$", _)  ;	-, w, wp, ws, h, hp, hs and Number
 					a[type].Push(["WH", _d, (_s ? -1 : 1) * (_n ? _n : 1)])
 				Else
@@ -58,8 +60,8 @@ Class AutoResize
 		hDWP := this.BeginDeferWindowPos(this.A.B.Count())
 		for k, v in this.A.B
 		{
-			this.ps.w := this.EvalSize("w", v.w)
-			this.ps.h := this.EvalSize("h", v.h)
+			this.ps.w := this.EvalSize("w", v.w, "x")
+			this.ps.h := this.EvalSize("h", v.h, "y")
 			this.ps.x := this.EvalPos("x", v.x, "w")
 			this.ps.y := this.EvalPos("y", v.y, "h")
 			
@@ -79,7 +81,7 @@ Class AutoResize
 			Else If (v[1] = "R")
 				ret += this.Round.Call((this.s["c" s] * (v[2] / 1000)) * v[3] * m)
 			Else If (v[1] = "XY")  ;	first
-				ret := this.ps[n] + this.ps[s]
+				ret := this.ps[n "p"] + this.ps[s "p"]
 			Else If (v[1] = "WH")
 				ret += this.ps[v[2]] * v[3] * m
 			Else If (v[1] = "N")
@@ -88,16 +90,18 @@ Class AutoResize
 				ret := this.ps[n "m"] + this.s["c" s] - this.ps[s], m := -1
 			Else If (v[1] = "SO")  ;	first
 				ret := this.ps[n "s"] + this.ps[s "s"]
-		} 
+		}
 		Return ret
 	}
-	EvalSize(n, a, ret = 0) {
+	EvalSize(n, a, s, ret = 0) {
 		for k, v in a
 		{
 			If (v[1] = "Num")
 				ret += v[2]
 			Else If (v[1] = "R") 
 				ret += this.Round.Call(this.s["c" n] * (v[2] / 1000) * v[3])
+			Else If (v[1] = "RO")  ;	first
+				ret := this.s["c" n] - (this.ps[s "p"] + this.ps[n "p"])
 			Else If (v[1] = "WH")
 				ret += this.ps[v[2]] * v[3]
 		}
