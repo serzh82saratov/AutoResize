@@ -1,8 +1,8 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 1.09
-	;  09.05.2019
+	;  версия - 1.10
+	;  13:23 09.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	
 	Static types := ["x", "y", "w", "h"]
@@ -76,16 +76,16 @@ Class AutoResize
 	EvalPos(n, a, s, m = 1, ret = 0) {
 		for k, v in a
 		{ 
-			If (v[1] = "Num")
+			If (v[1] = "XY")  ;	first
+				ret := this.ps[n "p"] + this.ps[s "p"]
+			Else If (v[1] = "N")
+				ret += this.ps[v[2]]
+			Else If (v[1] = "Num")
 				ret += v[2] * v[3] * m
 			Else If (v[1] = "R")
 				ret += this.Round.Call((this.s["c" s] * (v[2] / 1000)) * v[3] * m)
-			Else If (v[1] = "XY")  ;	first
-				ret := this.ps[n "p"] + this.ps[s "p"]
 			Else If (v[1] = "WH")
 				ret += this.ps[v[2]] * v[3] * m
-			Else If (v[1] = "N")
-				ret += this.ps[v[2]]
 			Else If (v[1] = "O")  ;	first
 				ret := this.ps[n "m"] + this.s["c" s] - this.ps[s], m := -1
 			Else If (v[1] = "SO")  ;	first
@@ -96,14 +96,14 @@ Class AutoResize
 	EvalSize(n, a, s, ret = 0) {
 		for k, v in a
 		{
-			If (v[1] = "Num")
-				ret += v[2]
+			If (v[1] = "WH")
+				ret += this.ps[v[2]] * v[3]
 			Else If (v[1] = "R") 
 				ret += this.Round.Call(this.s["c" n] * (v[2] / 1000) * v[3])
+			Else If (v[1] = "Num")
+				ret += v[2]
 			Else If (v[1] = "RO")  ;	first
 				ret := this.s["c" n] - (this.ps[s "p"] + this.ps[n "p"])
-			Else If (v[1] = "WH")
-				ret += this.ps[v[2]] * v[3]
 		}
 		Return ret
 	}
