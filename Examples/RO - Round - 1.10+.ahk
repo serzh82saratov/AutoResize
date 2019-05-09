@@ -33,7 +33,7 @@ GuiSize:
 	Return
 	
 1::
-	Gui1.SetArea(3, 3)
+	Gui1.SetArea()
 	Gui1.Resize()
 	Return
 	
