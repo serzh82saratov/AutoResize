@@ -1,13 +1,13 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 1.07
-	;  02.05.2019
+	;  версия - 1.08
+	;  09.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	
 	Static types := ["x", "y", "w", "h"]
 	
-	__New(Gui, Options = "") { 
+	__New(Gui, Options = "") {
 		Gui, %Gui%:+HWNDhGui
 		this.A := {Gui:Gui, hGui:hGui, B:{}}
 		this.ps := {xm:0, ym:0}, this.s := {cLeft:0, cTop:0, cRight:0, cBottom:0}
@@ -15,7 +15,7 @@ Class AutoResize
 		If RegExMatch(Options, "(?<d>(Floor|Ceil|Round))", _)   ;	Floor Ceil Round
 			this.Round := Func(_d)
 		for k, v in ["xm", "ym"]
-			RegExMatch(Options, "(?<Key>" v ")(?<Value>\d+)", _), this.ps[_Key] := _Value 
+			RegExMatch(Options, "(?<Key>" v ")(?<Value>\d+)", _), this.ps[_Key] := _Value
 	}
 	Item(Control, Options, Ex = "") {
 		Static SWP_NOZORDER := 0x0004, SWP_NOCOPYBITS := 0x0100
@@ -29,18 +29,18 @@ Class AutoResize
 		{
 			a[type] := []
 			for k2, word in StrSplit(b[k], "+")
-			{
+			{ 
 				If (word ~= "S)^-?\d+$") ;	-, Num
 					a[type].Push(["Num", word, 1])
 				Else If RegExMatch(word, "S)^(?<s>-)?r(?<d>\d+)$", _)  ;	-, rNum
 					a[type].Push(["R", _d, (_s ? -1 : 1)]) 
-				Else If RegExMatch(word, "S)^(?<d>(x|y))$", _)  ;	x, y
+				Else If (k < 3) && RegExMatch(word, "S)^(?<d>(x|y))$", _)  ;	x, y
 					a[type].Push(["XY", _d])
-				Else If (word = "o")  ;	o
+				Else If (k < 3) && (word = "o")  ;	o
 					a[type].Push(["O"])
-				Else If RegExMatch(word, "S)^(?<d>(x|y)(m|p|s))$", _)  ;	xm, ym, xp, yp, xs, ys
+				Else If (k < 3) && RegExMatch(word, "S)^(?<d>(x|y)(m|p|s))$", _)  ;	xm, ym, xp, yp, xs, ys
 					a[type].Push(["N", _d, 1])
-				Else If RegExMatch(word, "S)^(?<d>(x|y)so)$", _)  ;	xso, yso
+				Else If (k < 3) && RegExMatch(word, "S)^(?<d>(x|y)so)$", _)  ;	xso, yso
 					a[type].Push(["SO"]) 
 				Else If RegExMatch(word, "S)(?<s>-)?(?<d>(w|h)(p|s)?)(?<n>\d+(\.\d+)?)?$", _)  ;	-, w, wp, ws, h, hp, hs and Number
 					a[type].Push(["WH", _d, (_s ? -1 : 1) * (_n ? _n : 1)])
@@ -78,15 +78,15 @@ Class AutoResize
 				ret += v[2] * v[3] * m
 			Else If (v[1] = "R") 
 				ret += this.Round.Call((this.s["c" s] * (v[2] / 1000)) * v[3] * m)
-			Else If (v[1] = "XY")
+			Else If (v[1] = "XY")  ;	first
 				ret := this.ps[n] + this.ps[s]
 			Else If (v[1] = "WH")
 				ret += this.ps[v[2]] * v[3] * m
 			Else If (v[1] = "N")
 				ret += this.ps[v[2]]
-			Else If (v[1] = "O")
+			Else If (v[1] = "O")  ;	first
 				ret := this.ps[n "m"] + this.s["c" s] - this.ps[s], m := -1
-			Else If (v[1] = "SO")
+			Else If (v[1] = "SO")  ;	first
 				ret := this.ps[n "s"] + this.ps[s "s"]
 		} 
 		Return ret
@@ -102,6 +102,9 @@ Class AutoResize
 				ret += this.ps[v[2]] * v[3]
 		}
 		Return ret
+	}
+	Return(n) {
+		Return n
 	}
 	SetArea(cLeft = 0, cTop = 0, cRight = 0, cBottom = 0) {
 		this.s.cLeft := cLeft, this.s.cTop := cTop
@@ -124,8 +127,5 @@ Class AutoResize
 	}
 	EndDeferWindowPos(hDWP) {
 		DllCall("EndDeferWindowPos", "Ptr", hDWP)
-	}
-	Return(n) {
-		Return n
 	}
 }
