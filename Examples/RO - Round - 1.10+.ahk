@@ -19,7 +19,7 @@ Gui1.Item("EL51", "xm, y, r20, hp")
 Loop 49
 	Gui1.Item("EL" A_Index + 51, "x, yp, wp, hp") 
 	
-Gui1.Item("EL101", "xm, y, wp, hp")
+Gui1.Item("EL101", "xm, y, wp, ro")
 Loop 49
 	Gui1.Item("EL" A_Index + 101, "x, yp, wp, hp") 
 
