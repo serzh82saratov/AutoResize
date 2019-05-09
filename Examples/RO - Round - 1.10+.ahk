@@ -10,9 +10,9 @@ Loop 150
 
 Gui1 := New AutoResize(1, "Floor") 
 
-Gui1.Item("EL1", "xm, ym, r100, r333")
+Gui1.Item("EL1", "xm, ym, r20 + r20 + r20 + r20 + r20, r333")
 Loop 44
-	Gui1.Item("EL" A_Index + 1, "x, yp, r20, hp") 
+	Gui1.Item("EL" A_Index + 1, "x, yp, r20, hp")
 Gui1.Item("EL" 50, "x, yp, ro, hp") 
 	
 Gui1.Item("EL51", "xm, y, r20, hp")
