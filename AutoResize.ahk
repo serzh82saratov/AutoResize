@@ -1,8 +1,8 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 1.11
-	;  15:41 09.05.2019
+	;  версия - 1.12
+	;  04:52 10.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	
 	Static types := ["x", "y", "w", "h"]
@@ -44,7 +44,7 @@ Class AutoResize
 					a[type].Push(["SO"])
 				Else If (word = "ro") && (k > 2) && (k2 = 1)  ;	RO
 					a[type].Push(["RO"])
-				Else If RegExMatch(word, "S)(?<s>-)?(?<d>(w|h)(p|s)?)(?<n>\d+(\.\d+)?)?$", _)  ;	-, w, wp, ws, h, hp, hs and Number
+				Else If RegExMatch(word, "S)^(?<s>-)?(?<d>(w|h)(p|s)?)(?<n>\d+(\.\d+)?)?$", _)  ;	-, w, wp, ws, h, hp, hs and Number
 					a[type].Push(["WH", _d, (_s ? -1 : 1) * (_n ? _n : 1)])
 				Else
 					Throw Exception("Class AutoResize invalid option """ Format("{:U}", type) """ member: """ word """", -1)
@@ -90,7 +90,7 @@ Class AutoResize
 				ret := this.ps[n "m"] + this.s["c" s] - this.ps[s], m := -1
 			Else If (v[1] = "SO")  ;	first
 				ret := this.ps[n "s"] + this.ps[s "s"]
-		}
+		} 
 		Return ret
 	}
 	EvalSize(n, a, s, ret = 0) {
@@ -110,16 +110,6 @@ Class AutoResize
 	Return(n) {
 		Return n
 	}
-	SetArea(cLeft = 0, cTop = 0, cRight = 0, cBottom = 0) {
-		this.s.cLeft := cLeft, this.s.cTop := cTop
-		this.s.cRight := cRight, this.s.cBottom := cBottom
-	}
-	GetClientSize(hwnd, ByRef w, ByRef h) {
-		Static _ := VarSetCapacity(pwi, 60, 0)
-		DllCall("GetWindowInfo", "Ptr", hwnd, "Ptr", &pwi)
-		w := NumGet(pwi, 28, "Int") - NumGet(pwi, 20, "Int")
-		h := NumGet(pwi, 32, "Int") - NumGet(pwi, 24, "Int")
-	}
 	BeginDeferWindowPos(Count) {
 		Return DllCall("BeginDeferWindowPos", "Int", Count) 
 	}
@@ -131,5 +121,15 @@ Class AutoResize
 	}
 	EndDeferWindowPos(hDWP) {
 		DllCall("EndDeferWindowPos", "Ptr", hDWP)
+	}
+	SetArea(cLeft = 0, cTop = 0, cRight = 0, cBottom = 0) {
+		this.s.cLeft := cLeft, this.s.cTop := cTop
+		this.s.cRight := cRight, this.s.cBottom := cBottom
+	}
+	GetClientSize(hwnd, ByRef w, ByRef h) {
+		Static _ := VarSetCapacity(pwi, 60, 0)
+		DllCall("GetWindowInfo", "Ptr", hwnd, "Ptr", &pwi)
+		w := NumGet(pwi, 28, "Int") - NumGet(pwi, 20, "Int")
+		h := NumGet(pwi, 32, "Int") - NumGet(pwi, 24, "Int")
 	}
 }
