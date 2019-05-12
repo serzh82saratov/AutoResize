@@ -1,8 +1,8 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 1.13
-	;  01:34 13.05.2019
+	;  версия - 1.14
+	;  01:49 13.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	
 	Static types := ["x", "y", "w", "h"]
@@ -21,6 +21,7 @@ Class AutoResize
 		Static SWP_NOZORDER := 0x0004, SWP_NOCOPYBITS := 0x0100
 		Options := StrReplace(Options, " ")
 		Options := StrReplace(Options, "-", "+-")
+		Options := StrReplace(Options, "*", "+*")
 		If (Control + 0 = "") || (0, Hwnd := Control)
 			GuiControlGet, Hwnd, % this.A.Gui ":Hwnd", % Control
 		a := {CH:Hwnd, CN:Control, F:(Ex ~= "Draw" ? SWP_NOZORDER|SWP_NOCOPYBITS : SWP_NOZORDER), Section:!!(Ex ~= "Section")}
@@ -44,6 +45,8 @@ Class AutoResize
 					a[type].Push(["SO"])
 				Else If (word = "ro") && (k > 2) && (k2 = 1)  ;	RO
 					a[type].Push(["RO"])
+				Else If RegExMatch(word, "S)^\*(?<d>\d+)$", _)  ;	Mult
+					a[type].Push(["Mult", _d])
 				Else If RegExMatch(word, "S)^(?<s>-)?(?<d>(w|h)(p|s)?)(?<n>\d+(\.\d+)?)?$", _)  ;	-, w, wp, ws, h, hp, hs and Number
 					a[type].Push(["WH", _d, (_s ? -1 : 1) * (_n ? _n : 1)])
 				Else
@@ -90,6 +93,8 @@ Class AutoResize
 				ret := this.ps[n "m"] + this.s["c" s] - this.ps[s], m := -1
 			Else If (v[1] = "SO")  ;	first
 				ret := this.ps[n "s"] + this.ps[s "s"]
+			Else If (v[1] = "Mult")
+				ret *= v[2]
 		} 
 		Return ret
 	}
@@ -104,6 +109,8 @@ Class AutoResize
 				ret += v[2]
 			Else If (v[1] = "RO")  ;	first
 				ret := Ceil(this.s["c" n] - (this.ps[s "p"] + this.ps[n "p"]))
+			Else If (v[1] = "Mult")
+				ret *= v[2]
 		}
 		Return ret
 	}
