@@ -1,8 +1,8 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 1.14
-	;  01:49 13.05.2019
+	;  версия - 1.15
+	;  01:59 13.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	
 	Static types := ["x", "y", "w", "h"]
@@ -45,7 +45,7 @@ Class AutoResize
 					a[type].Push(["SO"])
 				Else If (word = "ro") && (k > 2) && (k2 = 1)  ;	RO
 					a[type].Push(["RO"])
-				Else If RegExMatch(word, "S)^\*(?<d>\d+)$", _)  ;	Mult
+				Else If RegExMatch(word, "S)^\*(?<d>\d+(\.\d+)?)$", _)  ;	Mult
 					a[type].Push(["Mult", _d])
 				Else If RegExMatch(word, "S)^(?<s>-)?(?<d>(w|h)(p|s)?)(?<n>\d+(\.\d+)?)?$", _)  ;	-, w, wp, ws, h, hp, hs and Number
 					a[type].Push(["WH", _d, (_s ? -1 : 1) * (_n ? _n : 1)])
