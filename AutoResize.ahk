@@ -1,8 +1,8 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 1.12
-	;  04:52 10.05.2019
+	;  версия - 1.13
+	;  01:34 13.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	
 	Static types := ["x", "y", "w", "h"]
@@ -103,7 +103,7 @@ Class AutoResize
 			Else If (v[1] = "Num")
 				ret += v[2]
 			Else If (v[1] = "RO")  ;	first
-				ret := this.s["c" n] - (this.ps[s "p"] + this.ps[n "p"])
+				ret := Ceil(this.s["c" n] - (this.ps[s "p"] + this.ps[n "p"]))
 		}
 		Return ret
 	}
