@@ -10,7 +10,7 @@ Loop 200
 
 ex1 := New AutoResize(1, "Floor") 
 
-ex1.Item("EL1", "xm, ym, r20 + r20 + r20 + r20 + r20, r333")
+ex1.Item("EL1", "xm, ym, r20 * 5, r333")
 Loop 44
 	ex1.Item("EL" A_Index + 1, "x, yp, r20, hp")
 ex1.Item("EL" 50, "x, yp, ro, hp") 
@@ -25,7 +25,7 @@ Loop 49
 
 Gui, Show, x10 y10 w610 h200
 
-ex2 := New AutoResize(1, "xm0")
+ex2 := New AutoResize(1)
 
 Gui, Add, Progress, vP1 BackgroundBlack Hidden 
 ex2.Item("P1", "0, 0, r1000, 111", "Section Draw")
@@ -58,7 +58,7 @@ GuiSize:
 	
 2::
 	Area := 1
-	ex1.SetArea(111, 111, 33, 33) 
+	ex1.SetArea(111, 111, 33, 33)
 	ex1.Resize()
 	ex2.Resize()
 	Loop 4
