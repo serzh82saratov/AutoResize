@@ -15,7 +15,8 @@ Class AutoResize
 		If RegExMatch(Options, "(?<d>(Floor|Ceil|Round))", _)   ;	< Floor, > Ceil, <> Round
 			this.Round := Func(_d)
 		for k, v in ["xm", "ym"]
-			RegExMatch(Options, "(?<Key>" v ")(?<Value>\d+)", _), this.ps[_Key] := _Value
+			RegExMatch(Options, "(?<Key>" v ")(?<Value>\d+)", _), this.ps[_Key] := _Value 
+		this.SetWHOff()
 	}
 	Item(Control, Options, Ex = "") {
 		this.ItemsIndex[Control] := this.A.B.Count() + 1
@@ -82,9 +83,9 @@ Class AutoResize
 	}
 	Resize(W = "", H = "") {
 		If (W = "")
-			this.GetClientSize(this.A.hGui, W, H)
-		this.s.cw := W - this.ps.xm * 2 - this.s.cLeft - this.s.cRight
-		this.s.ch := H - this.ps.ym * 2 - this.s.cTop - this.s.cBottom
+			this.GetClientSize(this.A.hGui, W, H) 
+		this.s.cw := W - this.ps.WOFF
+		this.s.ch := H - this.ps.HOFF
 		hDWP := this.BeginDeferWindowPos(this.A.B.Count())
 		for k, v in this.A.B
 		{ 
@@ -157,7 +158,12 @@ Class AutoResize
 	SetArea(cLeft = 0, cTop = 0, cRight = 0, cBottom = 0) {
 		this.s.cLeft := cLeft, this.s.cTop := cTop
 		this.s.cRight := cRight, this.s.cBottom := cBottom
+		this.SetWHOff()
 	}
+	SetWHOff() {
+		this.ps.WOFF := this.s.cLeft + this.s.cRight + this.ps.xm * 2
+		this.ps.HOFF := this.s.cTop + this.s.cBottom + this.ps.ym * 2
+	} 
 	GetClientSize(hwnd, ByRef w, ByRef h) {
 		Static _ := VarSetCapacity(pwi, 60, 0)
 		DllCall("GetWindowInfo", "Ptr", hwnd, "Ptr", &pwi)
