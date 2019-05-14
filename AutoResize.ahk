@@ -1,8 +1,8 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 1.18
-	;  03:14 15.05.2019
+	;  версия - 1.19
+	;  03:47 15.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	
 	Static types := ["x", "y", "w", "h"]
@@ -84,8 +84,8 @@ Class AutoResize
 	Resize(W = "", H = "") {
 		If (W = "")
 			this.GetClientSize(this.A.hGui, W, H) 
-		this.s.cw := W - this.ps.WOFF
-		this.s.ch := H - this.ps.HOFF
+		this.s.cw := W - this.s.WOFF
+		this.s.ch := H - this.s.HOFF
 		hDWP := this.BeginDeferWindowPos(this.A.B.Count())
 		for k, v in this.A.B
 		{ 
@@ -161,8 +161,8 @@ Class AutoResize
 		this.SetWHOff()
 	}
 	SetWHOff() {
-		this.ps.WOFF := this.s.cLeft + this.s.cRight + this.ps.xm * 2
-		this.ps.HOFF := this.s.cTop + this.s.cBottom + this.ps.ym * 2
+		this.s.WOFF := this.s.cLeft + this.s.cRight + this.ps.xm * 2
+		this.s.HOFF := this.s.cTop + this.s.cBottom + this.ps.ym * 2
 	} 
 	GetClientSize(hwnd, ByRef w, ByRef h) {
 		Static _ := VarSetCapacity(pwi, 60, 0)
