@@ -1,15 +1,15 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 1.16
-	;  02:10 13.05.2019
+	;  версия - 1.17
+	;  03:03 15.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	
 	Static types := ["x", "y", "w", "h"]
 	
 	__New(Gui, Options = "") {
 		Gui, %Gui%:+HWNDhGui
-		this.A := {Gui:Gui, hGui:hGui, B:{}}
+		this.A := {Gui:Gui, hGui:hGui, B:{}}, this.ItemsIndex := {}
 		this.ps := {xm:0, ym:0}, this.s := {cLeft:0, cTop:0, cRight:0, cBottom:0}
 		this.Round := ObjBindMethod(this, "Return")
 		If RegExMatch(Options, "(?<d>(Floor|Ceil|Round))", _)   ;	< Floor, > Ceil, <> Round
@@ -18,14 +18,34 @@ Class AutoResize
 			RegExMatch(Options, "(?<Key>" v ")(?<Value>\d+)", _), this.ps[_Key] := _Value
 	}
 	Item(Control, Options, Ex = "") {
+		this.ItemsIndex[Control] := this.A.B.Count() + 1
+		this.A.B.Push(this.StrToItem(Control, Options, Ex))
+	}
+	SetItem(Control, Options, Ex = "") {
+		If !(i := this.ItemsIndex[Control])
+			Return
+		this.A.B[i] := this.StrToItem(Control, Options, Ex)
+	}
+	RemoveItem(Control) {
+		this.A.B.RemoveAt(this.ItemsIndex[Control])
+		this.ItemsIndex.Delete(Control)
+	}
+	InsertItem(ControlOff, Control, Options, Ex = "") {
+		this.A.B.InsertAt(Off := this.ItemsIndex[ControlOff], this.StrToItem(Control, Options, Ex))
+		this.ItemsIndex[Control] := Off
+		for k, v in this.ItemsIndex
+			If (A_Index > Off)
+				this.ItemsIndex[k] := A_Index + 1
+	}
+	StrToItem(Control, Options, Ex) {
 		Static SWP_NOZORDER := 0x0004, SWP_NOCOPYBITS := 0x0100
+		If (Control + 0 = "") || (0, Hwnd := Control)
+			GuiControlGet, Hwnd, % this.A.Gui ":Hwnd", % Control
+		a := {CH:Hwnd, CN:Control, F:(Ex ~= "Draw" ? SWP_NOZORDER|SWP_NOCOPYBITS : SWP_NOZORDER), Section:!!(Ex ~= "Section")}
 		Options := StrReplace(Options, " ")
 		Options := StrReplace(Options, "-", "+-")
 		Options := StrReplace(Options, "*", "+*")
 		Options := StrReplace(Options, "/", "+/")
-		If (Control + 0 = "") || (0, Hwnd := Control)
-			GuiControlGet, Hwnd, % this.A.Gui ":Hwnd", % Control
-		a := {CH:Hwnd, CN:Control, F:(Ex ~= "Draw" ? SWP_NOZORDER|SWP_NOCOPYBITS : SWP_NOZORDER), Section:!!(Ex ~= "Section")}
 		b := StrSplit(Options, ",")
 		for k, type in this.types
 		{
@@ -56,7 +76,7 @@ Class AutoResize
 					Throw Exception("Class AutoResize invalid option """ Format("{:U}", type) """ member: """ word """", -1)
 			}
 		}
-		this.A.B.Push(a)
+		Return a
 	}
 	Resize(W = "", H = "") {
 		If (W = "")
@@ -65,7 +85,7 @@ Class AutoResize
 		this.s.ch := H - this.ps.ym * 2 - this.s.cTop - this.s.cBottom
 		hDWP := this.BeginDeferWindowPos(this.A.B.Count())
 		for k, v in this.A.B
-		{
+		{ 
 			this.ps.w := this.EvalSize("w", v.w, "x")
 			this.ps.h := this.EvalSize("h", v.h, "y")
 			this.ps.x := this.EvalPos("x", v.x, "w")
