@@ -1,8 +1,8 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 1.17
-	;  03:03 15.05.2019
+	;  версия - 1.18
+	;  03:14 15.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	
 	Static types := ["x", "y", "w", "h"]
@@ -41,6 +41,8 @@ Class AutoResize
 		Static SWP_NOZORDER := 0x0004, SWP_NOCOPYBITS := 0x0100
 		If (Control + 0 = "") || (0, Hwnd := Control)
 			GuiControlGet, Hwnd, % this.A.Gui ":Hwnd", % Control
+		If !Hwnd
+			Throw Exception("Undefined handle for """ Control """, in gui """ this.A.Gui """")
 		a := {CH:Hwnd, CN:Control, F:(Ex ~= "Draw" ? SWP_NOZORDER|SWP_NOCOPYBITS : SWP_NOZORDER), Section:!!(Ex ~= "Section")}
 		Options := StrReplace(Options, " ")
 		Options := StrReplace(Options, "-", "+-")
