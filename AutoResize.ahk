@@ -57,7 +57,7 @@ Class AutoResize
 				If (word ~= "S)^-?\d+$") ;	-, Num
 					a[type].Push(["Num", word, 1])
 				Else If RegExMatch(word, "S)^(?<s>-)?r(?<d>\d+)$", _)  ;	-, rNum
-					a[type].Push(["R", _d / 1000, (_s ? -1 : 1)]) 
+					a[type].Push(["R", _d / 1000 * (_s ? -1 : 1)]) 
 				Else If RegExMatch(word, "S)^(?<d>(x|y))$", _) && (k < 3) && (k2 = 1)  ;	x, y
 					a[type].Push(["XY", _d])
 				Else If (word = "o") && (k < 3) && (k2 = 1)  ;	o
@@ -111,7 +111,7 @@ Class AutoResize
 			Else If (v[1] = "Num")
 				ret += v[2] * v[3] * m
 			Else If (v[1] = "R")
-				ret += this.Round.Call((this.s["c" s] * v[2]) * v[3] * m)
+				ret += this.Round.Call((this.s["c" s] * v[2]) * m)
 			Else If (v[1] = "WH")
 				ret += this.ps[v[2]] * v[3] * m
 			Else If (v[1] = "O")  ;	first
@@ -129,7 +129,7 @@ Class AutoResize
 			If (v[1] = "WH")
 				ret += this.ps[v[2]] * v[3]
 			Else If (v[1] = "R") 
-				ret += this.Round.Call(this.s["c" n] * v[2] * v[3])
+				ret += this.Round.Call(this.s["c" n] * v[2])
 			Else If (v[1] = "Num")
 				ret += v[2]
 			Else If (v[1] = "RO")  ;	first
