@@ -3,7 +3,7 @@
 SetBatchLines -1
 ; #Include <AutoResize>
 
-Gui, +Resize
+Gui, +Resize -DPIScale
 
 Loop 10
 	Gui, Add, Edit, vEL%A_Index%, %A_Index%
