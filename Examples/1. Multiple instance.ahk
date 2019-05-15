@@ -24,7 +24,7 @@ ex1.Item("EL9", "xso, yso, wp, hp")
 ex1.Item("EL10", "xp, ys - h, wp, hp")
 
 
-ex2 := New AutoResize(1, "ym30 xm30 Floor")
+ex2 := New AutoResize(1, "ym30 Floor")
 
 ex2.Item("EL1", "xm, ym, r250, r333", "Section")
 ex2.Item("EL2", "x, yp, wp, hp")
