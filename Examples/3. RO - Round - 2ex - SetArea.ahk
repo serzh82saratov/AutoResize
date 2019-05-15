@@ -5,15 +5,16 @@ SetBatchLines -1
 
 Gui, +Resize
 
-Loop 200
+Loop 150
 	Gui, Add, Edit, vEL%A_Index%, %A_Index%
 
 ex1 := New AutoResize(1, "Floor") 
 
-ex1.Item("EL1", "xm, ym, r20 * 5, r333")
-Loop 44
-	ex1.Item("EL" A_Index + 1, "x, yp, r20, hp")
-ex1.Item("EL" 50, "x, yp, ro, hp") 
+ex1.Item("EL1", "xm, ym, r20, r333")
+ex1.Item("EL2", "x, yp, wp * 5, hp")
+Loop 43
+	ex1.Item("EL" A_Index + 2, "x, yp, r20, hp")
+ex1.Item("EL" 50, "x, yp, rO, hp") 
 	
 ex1.Item("EL51", "xm, y, r20, hp")
 Loop 49
@@ -43,24 +44,21 @@ Escape:: ExitApp
 GuiSize:
 	If (A_EventInfo = 1) ; The window has been minimized.
 		Return
-	ex1.Resize(A_GuiWidth, A_GuiHeight)
-	If Area
-		ex2.Resize(A_GuiWidth, A_GuiHeight)
+	ex1.Resize(A_GuiWidth, A_GuiHeight) 
+	ex2.Resize(A_GuiWidth, A_GuiHeight)
 	Return
 	
 1::
-	Area := 0
-	Loop 4
-		GuiControl, Hide, P%A_Index%
+	ex2.Block := 1
+	ex2.Show(0)
 	ex1.SetArea()
 	ex1.Resize()
 	Return
 	
 2::
-	Area := 1
+	ex2.Block := 0
 	ex1.SetArea(111, 111, 33, 33)
 	ex1.Resize()
 	ex2.Resize()
-	Loop 4
-		GuiControl, Show, P%A_Index%
+	ex2.Show()
 	Return
