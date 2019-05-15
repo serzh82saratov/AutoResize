@@ -1,8 +1,8 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 1.23
-	;  00:19 16.05.2019
+	;  версия - 1.24
+	;  01:52 16.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	
 	Static types := ["x", "y", "w", "h"], oArea := ["Left", "Top", "Right", "Bottom"]
@@ -26,7 +26,9 @@ Class AutoResize
 			Return
 		this.A.B[i] := this.StrToItem(Control, Options, Ex)
 	}
-	RemoveItem(Control) {
+	RemoveItem(Control, Destroy = 0) {
+		If Destroy
+			DllCall("DestroyWindow", "Ptr", this.A.B[this.ItemsIndex[Control]].CH)
 		this.A.B.RemoveAt(this.ItemsIndex[Control])
 		this.ItemsIndex.Delete(Control)
 	}
