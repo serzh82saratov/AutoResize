@@ -4,7 +4,7 @@ SetBatchLines -1
 ; #Include <AutoResize> 
 
 Gui, New
-Gui, +Resize +HWNDhGui1
+Gui, +Resize +HWNDhGui1 -DPIScale
 Loop 5
 	Gui, Add, Edit, vEL%A_Index% hwndhEL%A_Index%, %A_Index%
 ex1 := New AutoResize(hGui1, "Ceil") 
