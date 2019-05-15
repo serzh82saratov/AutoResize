@@ -39,9 +39,8 @@ Class AutoResize
 				this.ItemsIndex[k] := A_Index + 1
 	}
 	StrToItem(Control, Options, Ex) {
-		Static SWP_NOZORDER := 0x0004, SWP_NOCOPYBITS := 0x0100
-		If (Control + 0 = "") || (0, Hwnd := Control)
-			GuiControlGet, Hwnd, % this.A.Gui ":Hwnd", % Control
+		Static SWP_NOZORDER := 0x0004, SWP_NOCOPYBITS := 0x0100 
+		GuiControlGet, Hwnd, % this.A.Gui ":Hwnd", % Control
 		If !Hwnd
 			Throw Exception("Undefined handle for """ Control """, in gui """ this.A.Gui """")
 		a := {CH:Hwnd, CN:Control, F:(Ex ~= "Draw" ? SWP_NOZORDER|SWP_NOCOPYBITS : SWP_NOZORDER), Section:!!(Ex ~= "Section")}
