@@ -24,20 +24,20 @@ ex1.Item("EL9", "xso, yso, wp, hp")
 ex1.Item("EL10", "xp, ys - h, wp, hp")
 
 
-ex2 := New AutoResize(1, "ym20")
+ex2 := New AutoResize(1, "ym30 xm30 Floor")
 
 ex2.Item("EL1", "xm, ym, r250, r333", "Section")
 ex2.Item("EL2", "x, yp, wp, hp")
 ex2.Item("EL3", "x, yp, wp, hp")
-ex2.Item("EL4", "x, yp, wp, hp")
+ex2.Item("EL4", "x, yp, ro, hp")
 
 ex2.Item("EL5", "xs, y, ws2, hp")
-ex2.Item("EL6", "x, yp, wp, hp")
+ex2.Item("EL6", "x, yp, ro, hp")
 
-ex2.Item("EL7", "xs, y, ws, hs")
+ex2.Item("EL7", "xs, y, ws, ro")
 ex2.Item("EL8", "x, yp, wp, hp")
 ex2.Item("EL9", "x, yp, wp, hp")
-ex2.Item("EL10", "x, yp, wp, hp")
+ex2.Item("EL10", "x, yp, ro, hp")
 
 ex := ex1
 
