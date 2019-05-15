@@ -1,11 +1,11 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 1.21
-	;  04:57 15.05.2019
+	;  версия - 1.22
+	;  00:19 16.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	
-	Static types := ["x", "y", "w", "h"]
+	Static types := ["x", "y", "w", "h"], oArea := ["Left", "Top", "Right", "Bottom"]
 	
 	__New(Gui, Options = "") {
 		Gui, %Gui%:+HWNDhGui
@@ -15,8 +15,7 @@ Class AutoResize
 		If RegExMatch(Options, "(?<d>(Floor|Ceil|Round))", _)   ;	< Floor, > Ceil, <> Round
 			this.Round := Func(_d)
 		for k, v in ["xm", "ym"]
-			RegExMatch(Options, "(?<Key>" v ")(?<Value>\d+)", _), this.ps[_Key] := _Value 
-		this.SetWHOff()
+			RegExMatch(Options, "(?<Key>" v ")(?<Value>\d+)", _), this.ps[_Key] := _Value  
 	}
 	Item(Control, Options, Ex = "") {
 		this.ItemsIndex[Control] := this.A.B.Count() + 1
@@ -84,8 +83,9 @@ Class AutoResize
 	Resize(W = "", H = "") {
 		If this.Block
 			Return
-		If (W = "")
+		If (W = "" || H = "")
 			this.GetClientSize(this.A.hGui, W, H) 
+		this.GetArea(W, H)
 		this.s.cw := W - this.s.WOFF
 		this.s.ch := H - this.s.HOFF
 		hDWP := this.BeginDeferWindowPos(this.A.B.Count())
@@ -100,7 +100,7 @@ Class AutoResize
 				this.ps[type "p"] := this.ps[type]
 				, v.Section && this.ps[type "s"] := this.ps[type]
 				
-			hDWP := this.DeferWindowPos(hDWP, v.CH, v.F, this.ps.x + this.s.cLeft, this.ps.y + this.s.cTop, this.ps.w, this.ps.h)
+			hDWP := this.DeferWindowPos(hDWP, v.CH, v.F, this.ps.x + this.s.Left, this.ps.y + this.s.Top, this.ps.w, this.ps.h)
 		}
 		this.EndDeferWindowPos(hDWP)
 	}
@@ -165,14 +165,29 @@ Class AutoResize
 	EndDeferWindowPos(hDWP) {
 		DllCall("EndDeferWindowPos", "Ptr", hDWP)
 	}
-	SetArea(cLeft = 0, cTop = 0, cRight = 0, cBottom = 0) {
-		this.s.cLeft := cLeft, this.s.cTop := cTop
-		this.s.cRight := cRight, this.s.cBottom := cBottom
-		this.SetWHOff()
+	SetArea(coords*) {
+		Loop 4
+		{
+			a := coords[A_Index]
+			If (a = "")
+				b := 0
+			Else If (a + 0 != "")
+				b := a
+			Else If RegExMatch(a, "S)^r(?<d>\d+)$", _)
+				b := -(_d / 1000)
+			Else
+				Throw Exception("Class AutoResize invalid option """ this.oArea[A_Index] """ member: """ a """", -1)
+			this.s["c" this.oArea[A_Index]] := b
+		}
 	}
-	SetWHOff() {
-		this.s.WOFF := this.s.cLeft + this.s.cRight + this.ps.xm * 2
-		this.s.HOFF := this.s.cTop + this.s.cBottom + this.ps.ym * 2
+	GetArea(W, H) {
+		for k, v in this.oArea
+		{
+			a := this.s["c" v]
+			this.s[v] := a < 0 ? this.Round.Call(Abs(a) * (k = 1 || k = 3 ? W : H)) : a 
+		}
+		this.s.WOFF := this.s.Left + this.s.Right + this.ps.xm * 2
+		this.s.HOFF := this.s.Top + this.s.Bottom + this.ps.ym * 2
 	} 
 	GetClientSize(hwnd, ByRef w, ByRef h) {
 		Static _ := VarSetCapacity(pwi, 60, 0)
