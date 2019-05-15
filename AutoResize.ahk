@@ -39,7 +39,7 @@ Class AutoResize
 				this.ItemsIndex[k] := A_Index + 1
 	}
 	StrToItem(Control, Options, Ex) {
-		Static SWP_NOZORDER := 0x0004, SWP_NOCOPYBITS := 0x0100 
+		Static SWP_NOZORDER := 0x0004, SWP_NOCOPYBITS := 0x0100
 		GuiControlGet, Hwnd, % this.A.Gui ":Hwnd", % Control
 		If !Hwnd
 			Throw Exception("Undefined handle for """ Control """, in gui """ this.A.Gui """")
