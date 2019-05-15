@@ -1,8 +1,8 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 1.20
-	;  04:49 15.05.2019
+	;  версия - 1.21
+	;  04:57 15.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	
 	Static types := ["x", "y", "w", "h"]
@@ -49,6 +49,7 @@ Class AutoResize
 		Options := StrReplace(Options, "-", "+-")
 		Options := StrReplace(Options, "*", "+*")
 		Options := StrReplace(Options, "/", "+/")
+		Options := Trim(Options, "+")
 		b := StrSplit(Options, ",")
 		for k, type in this.types
 		{
@@ -145,16 +146,16 @@ Class AutoResize
 	Return(n) {
 		Return n
 	}
-	BeginDeferWindowPos(Count) {
-		Return DllCall("BeginDeferWindowPos", "Int", Count) 
-	}
 	Show(Show = 1) {
 		Static SWP_NOSIZE := 0x0001, SWP_NOMOVE := 0x0002, SWP_SHOWWINDOW := 0x0040, SWP_HIDEWINDOW := 0x0080 
 		F := SWP_NOSIZE | SWP_NOMOVE | (Show ? SWP_SHOWWINDOW : SWP_HIDEWINDOW)
 		hDWP := this.BeginDeferWindowPos(this.A.B.Count())
-		for k, v in this.A.B 
-			hDWP := this.DeferWindowPos(hDWP, v.CH, F | v.F) 
+		for k, v in this.A.B
+			hDWP := this.DeferWindowPos(hDWP, v.CH, F | v.F)
 		this.EndDeferWindowPos(hDWP)
+	}
+	BeginDeferWindowPos(Count) {
+		Return DllCall("BeginDeferWindowPos", "Int", Count) 
 	}
 	DeferWindowPos(hDWP, hWnd, flag, x = 0, y = 0, w = 0, h = 0, hWndInsertAfter = 0) {
 		Return DllCall("DeferWindowPos"
