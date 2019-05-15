@@ -1,8 +1,8 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 1.24
-	;  01:52 16.05.2019
+	;  версия - 1.25
+	;  03:15 16.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	;  http://forum.script-coding.com/viewtopic.php?id=14782
 	
@@ -139,9 +139,9 @@ Class AutoResize
 			Else If (v[1] = "Num")
 				ret += v[2]
 			Else If (v[1] = "RO")  ;	first
-				ret := Ceil(this.s["c" n] - (this.ps[s "p"] + this.ps[n "p"]))
+				ret := Ceil(this.ps[s "m"] + this.s["c" n] - (this.ps[s "p"] + this.ps[n "p"]))
 			Else If (v[1] = "Mult")
-				ret *= v[2]
+				ret *= v[2] 
 		}
 		Return ret
 	}
