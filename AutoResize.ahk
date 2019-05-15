@@ -4,6 +4,7 @@ Class AutoResize
 	;  версия - 1.24
 	;  01:52 16.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
+	;  http://forum.script-coding.com/viewtopic.php?id=14782
 	
 	Static types := ["x", "y", "w", "h"], oArea := ["Left", "Top", "Right", "Bottom"]
 	
@@ -148,7 +149,7 @@ Class AutoResize
 		Return n
 	}
 	Show(Show = 1) {
-		Static SWP_NOSIZE := 0x0001, SWP_NOMOVE := 0x0002, SWP_SHOWWINDOW := 0x0040, SWP_HIDEWINDOW := 0x0080 
+		Static SWP_NOSIZE := 0x0001, SWP_NOMOVE := 0x0002, SWP_SHOWWINDOW := 0x0040, SWP_HIDEWINDOW := 0x0080
 		F := SWP_NOSIZE | SWP_NOMOVE | (Show ? SWP_SHOWWINDOW : SWP_HIDEWINDOW)
 		hDWP := this.BeginDeferWindowPos(this.A.B.Count())
 		for k, v in this.A.B
