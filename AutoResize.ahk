@@ -1,7 +1,7 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 1.22
+	;  версия - 1.23
 	;  00:19 16.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	
@@ -32,10 +32,10 @@ Class AutoResize
 	}
 	InsertItem(ControlOff, Control, Options, Ex = "") {
 		this.A.B.InsertAt(Off := this.ItemsIndex[ControlOff], this.StrToItem(Control, Options, Ex))
-		this.ItemsIndex[Control] := Off
 		for k, v in this.ItemsIndex
-			If (A_Index > Off)
-				this.ItemsIndex[k] := A_Index + 1
+			If (v >= Off)
+				this.ItemsIndex[k] := v + 1
+		this.ItemsIndex[Control] := Off
 	}
 	StrToItem(Control, Options, Ex) {
 		Static SWP_NOZORDER := 0x0004, SWP_NOCOPYBITS := 0x0100
