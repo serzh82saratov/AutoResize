@@ -4,7 +4,7 @@ SetBatchLines -1
 #Include <AutoResize>
 
 OnMessage(0x201, "WM_LBUTTONDOWN")
-BarH := 8
+BarH := 7
 Gui, +HWNDhGui +Resize -DPIScale
 Gui, Add, Progress, y66 hwndhBar backgroundff0000 
 
@@ -38,7 +38,7 @@ WM_LBUTTONDOWN(wParam, lParam, msg, hwnd) {
 	{
 		Sleep 10
 		MouseGetPos, , y 
-		If (pry = y || (y < top && _y = top) || (y > bottom  && _y = bottom))
+		If (pry = y || (y < top && _y = top) || (y > bottom  && _y = Ceil(bottom - (BarH / 2))))
 			Continue
 		y := y < top ? top : y > bottom ? bottom : (y - BarH / 2)
 		pry := (y := y < top ? top : y)
@@ -47,7 +47,8 @@ WM_LBUTTONDOWN(wParam, lParam, msg, hwnd) {
 		Else 
 			R := ex1.Round.Call(1000 / ((H - ex1.s.HOFF) / (y - top)))
 		ex1.SetItem("ED1", "xm, ym, r333, r" R, "Section")
-		ex1.Resize(W, H) 
+		ex1.Resize(W, H)
+		GuiControlGet, _, Pos, %hBar%
 	} 
 	GuiControl, +backgroundff0000, %hBar%
 }
