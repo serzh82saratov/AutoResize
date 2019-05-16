@@ -26,16 +26,16 @@ Loop 49
 
 Gui, Show, x10 y10 w610 h200
 
-ex2 := New AutoResize(1)
+ex2 := New AutoResize(1, "Floor")
 
-Gui, Add, Progress, vP1 BackgroundBlack Hidden 
+Gui, Add, Progress, vP1 BackgroundBlack Hidden   ;	Black
 ex2.Item("P1", "0, 0, r1000, 111", "Section Draw")
-Gui, Add, Progress, vP2 BackgroundRed Hidden
+Gui, Add, Progress, vP2 BackgroundRed Hidden  ;	Red
 ex2.Item("P2", "o, y, 33, ro", "Draw")
-Gui, Add, Progress, vP3 BackgroundGreen Hidden
+Gui, Add, Progress, vP3 BackgroundGreen Hidden  ;	Green
 ex2.Item("P3", "0, o, r1000 - wp, wp", "Draw")
-Gui, Add, Progress, vP4 BackgroundBlue Hidden
-ex2.Item("P4", "xs, yso, hs, r1000 - hs - hp", "Draw")
+Gui, Add, Progress, vP4 BackgroundBlue Hidden  ;	Blue
+ex2.Item("P4", "xs, yso, r200, r1000 - hs - hp", "Draw")
 Return
 	
 GuiClose:
@@ -57,7 +57,7 @@ GuiSize:
 	
 2::
 	ex2.Block := 0
-	ex1.SetArea(111, 111, 33, 33)
+	ex1.SetArea("r200", 111, 33, 33)
 	ex1.Resize()
 	ex2.Resize()
 	ex2.Show()
