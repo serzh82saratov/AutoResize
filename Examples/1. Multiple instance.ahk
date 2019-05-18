@@ -1,5 +1,5 @@
 #SingleInstance Force
-#NoEnv
+#NoEnv 
 SetBatchLines -1
 ; #Include <AutoResize>
 
@@ -19,12 +19,12 @@ ex1.Item("EL5", "xso + 10, o + r100, r700 - 20, r100")
 
 ex1.Item("EL6", "xm + r400, ym + r400, r200, r200", "Section")
 ex1.Item("EL7", "xs - w, ys - h, 20, 30")
-ex1.Item("EL8", "xp, yso, wp, hp")
+ex1.Item("EL8", "xs - w, yso, wp, hp") 
 ex1.Item("EL9", "xso, yso, wp, hp")
-ex1.Item("EL10", "xp, ys - h, wp, hp")
+ex1.Item("EL10", "xso, ys - h, wp, hp")
 
 
-ex2 := New AutoResize(1, "ym30 Floor")
+ex2 := New AutoResize(1, "ym20 Ceil")
 
 ex2.Item("EL1", "xm, ym, r250, r333", "Section")
 ex2.Item("EL2", "x, yp, wp, hp")
