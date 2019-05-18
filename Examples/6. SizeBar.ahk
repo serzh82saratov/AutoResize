@@ -1,7 +1,6 @@
 #SingleInstance Force
 #NoEnv
-SetBatchLines -1
-#Include <AutoResize>
+SetBatchLines -1 
 
 OnMessage(0x201, "WM_LBUTTONDOWN")
 BarH := 7
@@ -30,9 +29,9 @@ WM_LBUTTONDOWN(wParam, lParam, msg, hwnd) {
 		Return 
 	pry := ""
 	CoordMode, Mouse, Client
-	AutoResize.GetClientSize(hGui, W, H)
-	top := ex1.s.Top + ex1.ps.ym
-	bottom := H - ex1.s.Bottom + ex1.ps.ym - BarH / 2	
+	AutoResize.GetClientSize(hGui, W, H) 
+	ex1.GetPos("ED1", _, top)
+	ex1.GetPos("ED6", _, _, _, bottom), bottom -= BarH / 2
 	GuiControl, +backgroundf0f0f0, %hBar% 
 	While GetKeyState("LButton", "P") 
 	{
@@ -50,7 +49,7 @@ WM_LBUTTONDOWN(wParam, lParam, msg, hwnd) {
 			R := ex1.Round.Call(1000 / ((H - ex1.s.HOFF) / (y - top)))
 		ex1.SetItem("ED1", "xm, ym, r333, r" R, "Section")
 		ex1.Resize(W, H)
-		GuiControlGet, _, Pos, %hBar%
+		ex1.GetPos(hBar, _, _y)
 	} 
 	GuiControl, +backgroundff0000, %hBar%
 }
