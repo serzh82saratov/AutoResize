@@ -1,8 +1,8 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 1.25
-	;  03:15 16.05.2019
+	;  версия - 1.26
+	;  16:54 18.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	;  http://forum.script-coding.com/viewtopic.php?id=14782
 	
@@ -93,7 +93,7 @@ Class AutoResize
 		this.s.ch := H - this.s.HOFF
 		hDWP := this.BeginDeferWindowPos(this.A.B.Count())
 		for k, v in this.A.B
-		{ 
+		{
 			this.ps.w := this.EvalSize("w", v.w, "x")
 			this.ps.h := this.EvalSize("h", v.h, "y")
 			this.ps.x := this.EvalPos("x", v.x, "w")
@@ -139,7 +139,7 @@ Class AutoResize
 			Else If (v[1] = "Num")
 				ret += v[2]
 			Else If (v[1] = "RO")  ;	first
-				ret := Ceil(this.ps[s "m"] + this.s["c" n] - (this.ps[s "p"] + this.ps[n "p"]))
+				ret := Ceil(this.ps[s "m"] + (this.s["c" n] - (this.ps[s "p"] + this.ps[n "p"])))
 			Else If (v[1] = "Mult")
 				ret *= v[2] 
 		}
@@ -147,6 +147,11 @@ Class AutoResize
 	}
 	Return(n) {
 		Return n
+	}
+	GetPos(Control, byref Left = "", byref Top = "", byref Right = "", byref Bottom = "", byref Width = "", byref Height = "") {
+		GuiControlGet, _, % this.A.Gui ":Pos", %Control%
+		Left := _X, Top := _Y, Right := _X + _W, Bottom := _Y + _H
+		IsByRef(Width) && Width := _W, Height := _H 
 	}
 	Show(Show = 1) {
 		Static SWP_NOSIZE := 0x0001, SWP_NOMOVE := 0x0002, SWP_SHOWWINDOW := 0x0040, SWP_HIDEWINDOW := 0x0080
