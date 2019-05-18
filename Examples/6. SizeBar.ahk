@@ -13,7 +13,7 @@ Loop 6
 	
 ex1 := New AutoResize(1, "Ceil")
 ex1.SetArea("r200", "r150", 30, 20)
-ex1.Item("ED1", "xm, ym, r333, r500 - " BarH // 2, "Section")
+ex1.Item("ED1", "0, ym, r333, r500 - " BarH // 2, "Section")
 ex1.Item("ED2", "x, ys, ws, hs")
 ex1.Item("ED3", "x, ys, ro, hs") 
 ex1.Item(hBar, "xs, y, r1000, " BarH, "Draw") 
@@ -34,10 +34,12 @@ WM_LBUTTONDOWN(wParam, lParam, msg, hwnd) {
 	top := ex1.s.Top + ex1.ps.ym
 	bottom := H - ex1.s.Bottom + ex1.ps.ym - BarH / 2	
 	GuiControl, +backgroundf0f0f0, %hBar% 
-	While GetKeyState("LButton", "P")
+	While GetKeyState("LButton", "P") 
 	{
 		Sleep 10
-		MouseGetPos, , y 
+		MouseGetPos, , y
+		If !WinActive("ahk_id" hGui)
+			Break
 		If (pry = y || (y < top && _y = top) || (y > bottom  && _y = Ceil(bottom - (BarH / 2))))
 			Continue
 		y := y < top ? top : y > bottom ? bottom : (y - BarH / 2)
