@@ -14,7 +14,7 @@ ex1.Item("EL1", "xm, ym, r20, r333")
 ex1.Item("EL2", "x, yp, wp * 5, hp")
 Loop 43
 	ex1.Item("EL" A_Index + 2, "x, yp, r20, hp")
-ex1.Item("EL" 50, "x, yp, rO, hp") 
+ex1.Item("EL" 50, "x, yp, ro, hp")
 	
 ex1.Item("EL51", "xm, y, r20, hp")
 Loop 49
@@ -27,6 +27,7 @@ Loop 49
 Gui, Show, x10 y10 w610 h200
 
 ex2 := New AutoResize(1, "Floor")
+ex2.Block := 1
 
 Gui, Add, Progress, vP1 BackgroundBlack Hidden   ;	Black
 ex2.Item("P1", "0, 0, r1000, 111", "Section Draw")
