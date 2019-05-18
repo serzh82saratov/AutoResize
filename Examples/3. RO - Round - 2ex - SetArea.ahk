@@ -11,7 +11,7 @@ Loop 150
 ex1 := New AutoResize(1, "Floor") 
 
 ex1.Item("EL1", "xm, ym, r20, r333")
-ex1.Item("EL2", "x, yp, wp * 5, hp")
+ex1.Item("EL2", "x, yp, wp5, hp")
 Loop 43
 	ex1.Item("EL" A_Index + 2, "x, yp, r20, hp")
 ex1.Item("EL" 50, "x, yp, ro, hp")
