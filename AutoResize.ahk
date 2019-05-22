@@ -5,9 +5,9 @@ Class AutoResize
 	;  01:46 23.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	;  http://forum.script-coding.com/viewtopic.php?id=14782
-	
+
 	Static types := ["x", "y", "w", "h"], oArea := ["Left", "Top", "Right", "Bottom"]
-	
+
 	__New(Gui, Options = "") {
 		Gui, %Gui%:+HWNDhGui
 		this.A := {Gui:Gui, hGui:hGui, B:{}}, this.ItemsIndex := {}
@@ -16,7 +16,7 @@ Class AutoResize
 		If RegExMatch(Options, "(?<d>(Floor|Ceil|Round))", _)   ;	< Floor, > Ceil, <> Round
 			this.Round := Func(_d)
 		for k, v in ["xm", "ym"]
-			RegExMatch(Options, "(?<Key>" v ")(?<Value>\d+)", _), this.ps[_Key] := _Value  
+			RegExMatch(Options, "(?<Key>" v ")(?<Value>\d+)", _), this.ps[_Key] := _Value
 	}
 	Item(Control, Options, Ex = "") {
 		this.ItemsIndex[Control] := this.A.B.Count() + 1
@@ -56,15 +56,15 @@ Class AutoResize
 		{
 			a[type] := []
 			for k2, word in StrSplit(b[k], "+")
-			{ 
-				(word ~= "S)^-") ? (word := SubStr(word, 2), s := "-") : (s := "") 
-				
+			{
+				(word ~= "S)^-") ? (word := SubStr(word, 2), s := "-") : (s := "")
+
 				If (word ~= "S)^\d+$") ; Num
 					a[type].Push(["Num", s word])
 				Else If RegExMatch(word, "S)^r(?<d>\d+)$", _)  ; rNum
-					a[type].Push(["R", s (_d / 1000)]) 
-				Else If RegExMatch(word, "S)^r$", _)  ; r
-					a[type].Push(["R", s 1]) 
+					a[type].Push(["R", s (_d / 1000)])
+				Else If (word = "r")  ; r
+					a[type].Push(["R", s 1])
 				Else If RegExMatch(word, "S)^(?<d>(x|y))$", _)  ;	x, y
 					a[type].Push(["XY", _d, s])
 				Else If (word = "o") && (k < 3) && (k2 = 1)  ;	o only xy
@@ -91,7 +91,7 @@ Class AutoResize
 		If this.Block
 			Return
 		If (W = "" || H = "")
-			this.GetClientSize(this.A.hGui, W, H) 
+			this.GetClientSize(this.A.hGui, W, H)
 		this.CreateWorkArea(W, H)
 		this.s.cw := W - this.s.WOFF
 		this.s.ch := H - this.s.HOFF
@@ -102,27 +102,27 @@ Class AutoResize
 			this.ps.h := this.Eval("h", v.h, "y", "h")
 			this.ps.x := this.Eval("x", v.x, "w", "w")
 			this.ps.y := this.Eval("y", v.y, "h", "h")
-			
+
 			X := this.ps.x + this.s.Left
 			Y := this.ps.y + this.s.Top
-			
+
 			for k2, type in this.types
 				this.ps[type "p"] := this.ps[type]
-				
+
 			If v.Save
 				this.Save[v.CN] := {Left:X, Top:Y, Right:W - X - this.ps.w, Bottom:H - Y - this.ps.h, Width:this.ps.w, Height:this.ps.h}
-				
+
 			If v.Section
 				for k2, type in this.types
 					this.ps[type "s"] := this.ps[type]
-					
+
 			hDWP := this.DeferWindowPos(hDWP, v.CH, v.F, X, Y, this.ps.w, this.ps.h)
 		}
 		this.EndDeferWindowPos(hDWP)
 	}
 	Eval(n, a, s, nr, ret = 0) {
 		for k, v in a
-		{ 
+		{
 			If (v[1] = "N")
 				ret += v[3] this.ps[v[2]]
 			Else If (v[1] = "WH")
@@ -141,9 +141,9 @@ Class AutoResize
 				ret += v[3] (this.ps[v[2] "s"] + this.ps[nr "s"])
 			Else If (v[1] = "RO")  ;	first only wh
 				ret := Ceil(this.ps[s "m"] + (this.s["c" n] - (this.ps[s "p"] + this.ps[n "p"])))
-		} 
+		}
 		Return ret
-	} 
+	}
 	Return(n) {
 		Return n
 	}
@@ -152,7 +152,7 @@ Class AutoResize
 		Left := _X, Top := _Y, Right := _X + _W, Bottom := _Y + _H
 		IsByRef(Width) && Width := _W, Height := _H
 	}
-	GetArea(Control, byref Left = "", byref Top = "", byref Right = "", byref Bottom = "", byref Width = "", byref Height = "") { 
+	GetArea(Control, byref Left = "", byref Top = "", byref Right = "", byref Bottom = "", byref Width = "", byref Height = "") {
 		Left := this.Save[Control].Left, Top := this.Save[Control].Top
 		Right := this.Save[Control].Right, Bottom := this.Save[Control].Bottom
 		IsByRef(Width) && Width := this.Save[Control].Width, Height := this.Save[Control].Height
@@ -184,7 +184,7 @@ Class AutoResize
 		for k, v in this.oArea
 		{
 			a := this.s["c" v]
-			this.s[v] := a < 0 ? this.Round.Call(Abs(a) * (k = 1 || k = 3 ? W : H)) : a 
+			this.s[v] := a < 0 ? this.Round.Call(Abs(a) * (k = 1 || k = 3 ? W : H)) : a
 		}
 		this.s.WOFF := this.s.Left + this.s.Right + this.ps.xm * 2
 		this.s.HOFF := this.s.Top + this.s.Bottom + this.ps.ym * 2
@@ -193,7 +193,7 @@ Class AutoResize
 		If (W = "" || H = "")
 			this.GetClientSize(this.A.hGui, W, H)
 		Return (W = this.s.cw + this.s.WOFF && H = this.s.ch + this.s.HOFF)
-	} 
+	}
 	GetClientSize(hwnd, ByRef w, ByRef h) {
 		Static _ := VarSetCapacity(pwi, 60, 0)
 		DllCall("GetWindowInfo", "Ptr", hwnd, "Ptr", &pwi)
@@ -201,7 +201,7 @@ Class AutoResize
 		h := NumGet(pwi, 32, "Int") - NumGet(pwi, 24, "Int")
 	}
 	BeginDeferWindowPos(Count) {
-		Return DllCall("BeginDeferWindowPos", "Int", Count) 
+		Return DllCall("BeginDeferWindowPos", "Int", Count)
 	}
 	DeferWindowPos(hDWP, hWnd, flag, x = 0, y = 0, w = 0, h = 0, hWndInsertAfter = 0) {
 		Return DllCall("DeferWindowPos"
