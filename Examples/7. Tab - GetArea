@@ -2,7 +2,7 @@
 #NoEnv
 ; #Include <AutoResize>
 SetBatchLines -1
- 
+
 Gui, +Resize -DPIScale
 Gui, Color, E3C47A, DAD6CA
 Gui, Add, Tab3, vTab gTab AltSubmit hwndhTab +0x400, 1||2|3|4
@@ -16,36 +16,36 @@ Loop 3
 	Gui, Add, GroupBox, vGB%A_Index%, GroupBox %A_Index%
 Loop 2
 	Gui, Add, Edit, vED%A_Index%, Edit %A_Index%
-	
+
 ex := New AutoResize(1, "Ceil")
 ex.SetArea(5, 5, 5, 5)
-ex.Item("Tab", "xm, ym, r, r") 
+ex.Item("Tab", "xm, ym, r, r")
 
 ex1 := New AutoResize(1, "Ceil")
-ex1.SetArea(5, 5, 20, 35)
+ex1.SetArea(5, 5, 20, 40)
 
-ex1.Item("LB1", "xm, ym, r200, r - 5", "Section")
-ex1.Item("LB2", "x + 20, ym, r300 - 40, r - 105 * 0.3")
-ex1.Item("LB3", "xso + 5, y+5, r300 - 10, r - 105 * 0.7")
+ex1.Item("LB1", "xm, ym, r200, r", "Section")
+ex1.Item("LB2", "x + 20, ym, r300 - 40, r - 100 * 0.3")
+ex1.Item("LB3", "xso + 5, y+5, r300 - 10, r - 100 * 0.7")
 
 ex1.Item("BT1", "xp, y+5, wp, 30")
-ex1.Item("BT2", "xp, y, wp, hp") 
+ex1.Item("BT2", "xp, y, wp, hp")
 ex1.Item("BT3", "xp, y, wp, hp")
 
 ex1.Item("LB4", "x + 5, ym, r350, r600", "Section Save")
 
 ex1.Item("GB1", "xso + 5, ys, ro - 5, r200")
 ex1.Item("GB2", "xp, y + 5, wp,  yso - y - 5", "Save")
-ex1.Item("GB3", "xs, yso + 5,  r - xs, ro - 10")
+ex1.Item("GB3", "xs, yso + 5,  r - xs, ro - 5")
 
-ex2 := New AutoResize(1, "xm5 ym5 Ceil")  
+ex2 := New AutoResize(1, "xm5 ym5 Ceil")
 
 ex2.Item("ED1", "xm, ym, r, r500")
 ex2.Item("ED2", "xp, y, wp, ro")
 
 Loop 10
 	Gui, Add, Edit, vEL%A_Index%, %A_Index%
-	
+
 ex3 := New AutoResize(1, "xm10 ym10")
 
 ex3.Item("EL1", "xm, ym, r450, r200")
@@ -57,7 +57,7 @@ ex3.Item("EL5", "xso + 10, o + r100, r700 - 20, r100")
 
 ex3.Item("EL6", "xm + r400, ym + r400, r200, r200", "Section")
 ex3.Item("EL7", "xs - w, ys - h, 20, 30")
-ex3.Item("EL8", "xs - w, yso, wp, hp") 
+ex3.Item("EL8", "xs - w, yso, wp, hp")
 ex3.Item("EL9", "xso, yso, wp, hp")
 ex3.Item("EL10", "xso, ys - h, wp, hp")
 
@@ -66,7 +66,7 @@ Gui, Tab, 2
 Loop 2
 	Gui, Add, Edit, v2ED%A_Index%, Edit %A_Index%
 
-2ex1 := New AutoResize(1, "Ceil")   
+2ex1 := New AutoResize(1, "Ceil")
 2ex1.SetArea(5, 5, 20, 40)
 2ex1.Item("2ED1", "xm, ym, r, r500")
 2ex1.Item("2ED2", "xp, y, wp, ro")
@@ -78,34 +78,34 @@ Gui, +MinSize
 Return
 
 ResizeTab1:
-	ex1.Resize(GuiWidth, GuiHeight)  
-	
+	ex1.Resize(GuiWidth, GuiHeight)
+
 	ex1.GetArea("GB2", Left, Top, Right, Bottom)
 	ex2.SetArea(Left, Top + 10, Right, Bottom)
 	ex2.Resize(GuiWidth, GuiHeight)
-	
+
 	ex1.GetArea("LB4", Left, Top, Right, Bottom)
 	ex3.SetArea(Left, Top + 5, Right, Bottom)
 	ex3.Resize(GuiWidth, GuiHeight)
 	Return
-	
-ResizeTab2:   
+
+ResizeTab2:
 	2ex1.Resize(GuiWidth, GuiHeight)
 	Return
-	
+
 Tab:
-	GuiControlGet, Tab 
+	GuiControlGet, Tab
 	If !Tabs[Tab].IsCurrentArea()
 		Try Gosub ResizeTab%Tab%
 	Return
-	
+
 GuiSize:
 	If (A_EventInfo = 1) ; The window has been minimized.
-		Return 
+		Return
 	SendMessage, TCM_SETITEMSIZE := 0x1329, 0, Floor((A_GuiWidth - 16) / 4) | 0 << 16, , ahk_id %hTab%
-	ex.Resize(GuiWidth := A_GuiWidth, GuiHeight := A_GuiHeight)  
+	ex.Resize(GuiWidth := A_GuiWidth, GuiHeight := A_GuiHeight)
 	Try Gosub ResizeTab%Tab%
 	Return
 
 GuiClose:
-Escape:: ExitApp 
+Escape:: ExitApp
