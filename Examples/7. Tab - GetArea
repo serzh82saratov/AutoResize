@@ -22,7 +22,7 @@ ex.SetArea(5, 5, 5, 5)
 ex.Item("Tab", "xm, ym, r, r")
 
 ex1 := New AutoResize(1, "Ceil")  ;	Первая вкладка
-ex1.SetArea(5, 5, 20, 40)
+ex1.SetArea(5, 5, 25, 40)
 
 ex1.Item("LB1", "xm, ym, r200, r", "Section")
 ex1.Item("LB2", "x + 20, ym, r300 - 40, r - 100 * 0.3")
@@ -34,9 +34,9 @@ ex1.Item("BT3", "xp, y, wp, hp")
 
 ex1.Item("LB4", "x + 5, ym, r350, r600", "Section Save")
 
-ex1.Item("GB1", "xso + 5, ys, ro - 5, r200")
-ex1.Item("GB2", "xp, y + 5, wp,  yso - y - 5", "Save")
-ex1.Item("GB3", "xs, yso + 5,  r - xs, ro - 5")
+ex1.Item("GB1", "x + 5, ys, ro, r200")
+ex1.Item("GB2", "xp, y + 5, wp, yso - y", "Save")
+ex1.Item("GB3", "xs, yso + 5,  xp + wp - xs , ro")
 
 ex2 := New AutoResize(1, "xm5 ym5 Ceil")  ;	то что внутри GroupBox 2
 
@@ -64,7 +64,7 @@ ex3.Item("EL10", "xso, ys - h, wp, hp")
 
 Gui, Tab, 2
 Loop 2
-	Gui, Add, Edit, v2ED%A_Index%, Edit %A_Index%
+	Gui, Add, Edit, v2ED%A_Index% r6, Edit %A_Index%
 
 2ex1 := New AutoResize(1, "Ceil")  ;	Вторая вкладка
 2ex1.SetArea(5, 5, 20, 40)
