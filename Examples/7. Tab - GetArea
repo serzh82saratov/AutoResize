@@ -17,18 +17,18 @@ Loop 3
 Loop 2
 	Gui, Add, Edit, vED%A_Index%, Edit %A_Index%
 
-ex := New AutoResize(1, "Ceil")
+ex := New AutoResize(1, "Ceil")  ;	только Tab
 ex.SetArea(5, 5, 5, 5)
 ex.Item("Tab", "xm, ym, r, r")
 
-ex1 := New AutoResize(1, "Ceil")
+ex1 := New AutoResize(1, "Ceil")  ;	Первая вкладка
 ex1.SetArea(5, 5, 20, 40)
 
 ex1.Item("LB1", "xm, ym, r200, r", "Section")
 ex1.Item("LB2", "x + 20, ym, r300 - 40, r - 100 * 0.3")
-ex1.Item("LB3", "xso + 5, y+5, r300 - 10, r - 100 * 0.7")
+ex1.Item("LB3", "xso + 5, y + 5, wp + 30, r - 100 * 0.7")
 
-ex1.Item("BT1", "xp, y+5, wp, 30")
+ex1.Item("BT1", "xp, y + 5, wp, 30")
 ex1.Item("BT2", "xp, y, wp, hp")
 ex1.Item("BT3", "xp, y, wp, hp")
 
@@ -38,7 +38,7 @@ ex1.Item("GB1", "xso + 5, ys, ro - 5, r200")
 ex1.Item("GB2", "xp, y + 5, wp,  yso - y - 5", "Save")
 ex1.Item("GB3", "xs, yso + 5,  r - xs, ro - 5")
 
-ex2 := New AutoResize(1, "xm5 ym5 Ceil")
+ex2 := New AutoResize(1, "xm5 ym5 Ceil")  ;	то что внутри GroupBox 2
 
 ex2.Item("ED1", "xm, ym, r, r500")
 ex2.Item("ED2", "xp, y, wp, ro")
@@ -46,7 +46,7 @@ ex2.Item("ED2", "xp, y, wp, ro")
 Loop 10
 	Gui, Add, Edit, vEL%A_Index%, %A_Index%
 
-ex3 := New AutoResize(1, "xm10 ym10")
+ex3 := New AutoResize(1, "xm10 ym10")  ;	то что внутри LB4
 
 ex3.Item("EL1", "xm, ym, r450, r200")
 ex3.Item("EL2", "o, yp, wp, hp")
@@ -66,14 +66,14 @@ Gui, Tab, 2
 Loop 2
 	Gui, Add, Edit, v2ED%A_Index%, Edit %A_Index%
 
-2ex1 := New AutoResize(1, "Ceil")
+2ex1 := New AutoResize(1, "Ceil")  ;	Вторая вкладка
 2ex1.SetArea(5, 5, 20, 40)
 2ex1.Item("2ED1", "xm, ym, r, r500")
 2ex1.Item("2ED2", "xp, y, wp, ro")
 
 Tabs := [ex1, 2ex1]
 
-Gui, Show, x8 y30 w497 h346
+Gui, Show, x8 y8 w497 h346
 Gui, +MinSize
 Return
 
