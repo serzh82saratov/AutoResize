@@ -1,8 +1,8 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 2.00
-	;  01:46 23.05.2019
+	;  версия - 2.01
+	;  18:55 23.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	;  http://forum.script-coding.com/viewtopic.php?id=14782
 
@@ -11,7 +11,7 @@ Class AutoResize
 	__New(Gui, Options = "") {
 		Gui, %Gui%:+HWNDhGui
 		this.A := {Gui:Gui, hGui:hGui, B:{}}, this.ItemsIndex := {}
-		this.ps := {xm:0, ym:0}, this.s := {cLeft:0, cTop:0, cRight:0, cBottom:0}, this.Save := {}
+		this.ps := {xm:0, ym:0}, this.s := {Left:0, Top:0, Right:0, Bottom:0}, this.Save := {}
 		this.Round := ObjBindMethod(this, "Return")
 		If RegExMatch(Options, "(?<d>(Floor|Ceil|Round))", _)   ;	< Floor, > Ceil, <> Round
 			this.Round := Func(_d)
@@ -98,10 +98,10 @@ Class AutoResize
 		hDWP := this.BeginDeferWindowPos(this.A.B.Count())
 		for k, v in this.A.B
 		{
-			this.ps.w := this.Eval("w", v.w, "x", "w")
-			this.ps.h := this.Eval("h", v.h, "y", "h")
-			this.ps.x := this.Eval("x", v.x, "w", "w")
-			this.ps.y := this.Eval("y", v.y, "h", "h")
+			this.ps.w := this.Eval(v.w, "w", "x", "w")
+			this.ps.h := this.Eval(v.h, "h", "y", "h")
+			this.ps.x := this.Eval(v.x, "x", "w", "w")
+			this.ps.y := this.Eval(v.y, "y", "h", "h")
 
 			X := this.ps.x + this.s.Left
 			Y := this.ps.y + this.s.Top
@@ -110,7 +110,7 @@ Class AutoResize
 				this.ps[type "p"] := this.ps[type]
 
 			If v.Save
-				this.Save[v.CN] := {Left:X, Top:Y, Right:W - X - this.ps.w, Bottom:H - Y - this.ps.h, Width:this.ps.w, Height:this.ps.h}
+				this.Save[v.CN] := {Left: X, Top: Y, Right: W - X - this.ps.w, Bottom: H - Y - this.ps.h, Width: this.ps.w, Height: this.ps.h}
 
 			If v.Section
 				for k2, type in this.types
@@ -120,27 +120,27 @@ Class AutoResize
 		}
 		this.EndDeferWindowPos(hDWP)
 	}
-	Eval(n, a, s, nr, ret = 0) {
-		for k, v in a
+	Eval(arr, type, vec, side, ret = 0) {
+		for k, v in arr
 		{
 			If (v[1] = "N")
 				ret += v[3] this.ps[v[2]]
 			Else If (v[1] = "WH")
 				ret += m this.ps[v[2]] * v[3]
 			Else If (v[1] = "R")
-				ret += m this.Round.Call((this.s["c" nr] * v[2]))
+				ret += m this.Round.Call((this.s["c" side] * v[2]))
 			Else If (v[1] = "Num")
 				ret += m v[2]
 			Else If (v[1] = "XY")
-				ret += v[3] (this.ps[v[2] "p"] + this.ps[nr "p"])
+				ret += v[3] (this.ps[v[2] "p"] + this.ps[side "p"])
 			Else If (v[1] = "Mult")
 				ret *= v[2]
-			Else If (v[1] = "O")  ;	first only xy
-				ret := this.ps[n "m"] + this.s["c" s] - this.ps[s], m := "-"
 			Else If (v[1] = "SO")
-				ret += v[3] (this.ps[v[2] "s"] + this.ps[nr "s"])
+				ret += v[3] (this.ps[v[2] "s"] + this.ps[side "s"])
+			Else If (v[1] = "O")  ;	first only xy
+				ret := this.ps[type "m"] + this.s["c" vec] - this.ps[vec], m := "-"
 			Else If (v[1] = "RO")  ;	first only wh
-				ret := Ceil(this.ps[s "m"] + (this.s["c" n] - (this.ps[s "p"] + this.ps[n "p"])))
+				ret := Ceil(this.ps[vec "m"] + (this.s["c" type] - (this.ps[vec "p"] + this.ps[type "p"])))
 		}
 		Return ret
 	}
@@ -157,35 +157,24 @@ Class AutoResize
 		Right := this.Save[Control].Right, Bottom := this.Save[Control].Bottom
 		IsByRef(Width) && Width := this.Save[Control].Width, Height := this.Save[Control].Height
 	}
-	Show(Show = 1) {
-		Static SWP_NOSIZE := 0x0001, SWP_NOMOVE := 0x0002, SWP_SHOWWINDOW := 0x0040, SWP_HIDEWINDOW := 0x0080
-		F := SWP_NOSIZE | SWP_NOMOVE | (Show ? SWP_SHOWWINDOW : SWP_HIDEWINDOW)
-		hDWP := this.BeginDeferWindowPos(this.A.B.Count())
-		for k, v in this.A.B
-			hDWP := this.DeferWindowPos(hDWP, v.CH, F | v.F)
-		this.EndDeferWindowPos(hDWP)
-	}
 	SetArea(coords*) {
-		Loop 4
+		this.sa := {}
+		for k, v in this.oArea
 		{
-			a := coords[A_Index]
-			If (a = "")
-				b := 0
-			Else If (a + 0 != "")
-				b := a
+			a := coords[k]
+			If (a + 0 != "")
+				this.s[v] := a
+			Else If (a = "")
+				this.s[v] := 0
 			Else If RegExMatch(a, "S)^r(?<d>\d+)$", _)
-				b := -(_d / 1000)
+				this.sa[v] := (_d / 1000)
 			Else
-				Throw Exception("Class AutoResize invalid option """ this.oArea[A_Index] """ member: """ a """", -1)
-			this.s["c" this.oArea[A_Index]] := b
+				Throw Exception("Class AutoResize invalid option """ this.oArea[k] """ member: """ a """", -1) 
 		}
 	}
 	CreateWorkArea(W, H) {
-		for k, v in this.oArea
-		{
-			a := this.s["c" v]
-			this.s[v] := a < 0 ? this.Round.Call(Abs(a) * (k = 1 || k = 3 ? W : H)) : a
-		}
+		for k, v in this.sa
+			this.s[k] := this.Round.Call(v * (k = "Left" || k = "Right" ? W : H))
 		this.s.WOFF := this.s.Left + this.s.Right + this.ps.xm * 2
 		this.s.HOFF := this.s.Top + this.s.Bottom + this.ps.ym * 2
 	}
@@ -193,6 +182,14 @@ Class AutoResize
 		If (W = "" || H = "")
 			this.GetClientSize(this.A.hGui, W, H)
 		Return (W = this.s.cw + this.s.WOFF && H = this.s.ch + this.s.HOFF)
+	}
+	Show(Show = 1) {
+		Static SWP_NOSIZE := 0x0001, SWP_NOMOVE := 0x0002, SWP_SHOWWINDOW := 0x0040, SWP_HIDEWINDOW := 0x0080
+		F := SWP_NOSIZE | SWP_NOMOVE | (Show ? SWP_SHOWWINDOW : SWP_HIDEWINDOW)
+		hDWP := this.BeginDeferWindowPos(this.A.B.Count())
+		for k, v in this.A.B
+			hDWP := this.DeferWindowPos(hDWP, v.CH, F | v.F)
+		this.EndDeferWindowPos(hDWP)
 	}
 	GetClientSize(hwnd, ByRef w, ByRef h) {
 		Static _ := VarSetCapacity(pwi, 60, 0)
