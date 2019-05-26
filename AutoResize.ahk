@@ -1,8 +1,8 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 3.01
-	;  01:12 27.05.2019
+	;  версия - 3.02
+	;  01:29 27.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	;  http://forum.script-coding.com/viewtopic.php?id=14782
 
@@ -169,7 +169,7 @@ Class AutoResize
 				ret := this.ps[type "m"] + this.s["c" vec] - this.ps[vec], m := "-"
 
 			Else If (v[1] = "Region")
-				Return ret, this.ps[vec] := this.Eval(v[2], type, vec, side) - ret
+				Return this.ps[type] := ret, this.ps[vec] := this.Eval(v[2], type, vec, side) - ret
 
 			Else If (v[1] = "Debug")
 				MsgBox % "Результат: " ret "`n type: " type  "`n prior word: " v[2]
