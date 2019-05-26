@@ -1,8 +1,8 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 3.02
-	;  01:29 27.05.2019
+	;  версия - 3.03
+	;  02:40 27.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	;  http://forum.script-coding.com/viewtopic.php?id=14782
 
@@ -234,7 +234,7 @@ Class AutoResize
 		this.EndDeferWindowPos(hDWP)
 	}
 	GetClientSize(hwnd, ByRef w, ByRef h) {
-		Static _ := VarSetCapacity(pwi, 60, 0)
+		Static pwi, _ := VarSetCapacity(pwi, 60, 0)
 		Local
 		DllCall("GetWindowInfo", "Ptr", hwnd, "Ptr", &pwi)
 		w := NumGet(pwi, 28, "Int") - NumGet(pwi, 20, "Int")
