@@ -1,8 +1,8 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 3.00
-	;  03:50 26.05.2019
+	;  версия - 3.01
+	;  01:12 27.05.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	;  http://forum.script-coding.com/viewtopic.php?id=14782
 
@@ -81,6 +81,8 @@ Class AutoResize
 					result := ["SPO", _d, _n, s]
 				Else If RegExMatch(word, "iS)^(?<d>(w|h)(p|s)?)(?<n>\d+(\.\d+)?)?$", _)  ; w, wp, ws, h, hp, hs and Number
 					result := ["WH", _d, s (_n ? _n : 1)]
+				Else If (word ~= "i)^Z$") && (k < 3)  ; Z only xy
+					result := ["Z"]
 				Else If (word ~= "i)^O$") && (k < 3) && (k2 = 1)  ;	O only xy
 					result := ["O"]
 				Else If (word ~= "i)^RO$") && (k > 2) && (k2 = 1)  ;	RO only wh
@@ -92,7 +94,7 @@ Class AutoResize
 
 				Else If !Region && (word = ">")  ; Region
 					Region := k2, oRegion := []
-				Else If (Region && word ~= "i)^P$")  ; P
+				Else If (word ~= "i)^P$" && Region + 1 = k2)  ; P
 					result := ["N", type, s]
 
 				Else If (word ~= "i)^D$")  ; D
@@ -117,11 +119,7 @@ Class AutoResize
 			Return
 		If (W = "" || H = "")
 			this.GetClientSize(this.A.hGui, W, H)
-		this.CreateWorkArea(W, H, cw, ch)
-		If (this.s.cw = cw && this.s.ch = ch)
-			Return
-		this.s.cw := cw
-		this.s.ch := ch
+		this.CreateWorkArea(W, H)
 		hDWP := this.BeginDeferWindowPos(this.A.B.Count())
 		for k, v in this.A.B
 		{
@@ -163,13 +161,15 @@ Class AutoResize
 				ret += v[4] (this.ps[v[2] v[3]] + this.ps[side v[3]])
 			Else If (v[1] = "Mult")
 				ret *= v[2]
+			Else If (v[1] = "Z")  ;	Z only xy
+				ret += this.ps[type "m"] + this.s["c" side]
 			Else If (v[1] = "RO")  ;	first only wh
 				ret := Ceil(this.ps[vec "m"] + (this.s["c" type] - (this.ps[vec "p"] + this.ps[type "p"])))
 			Else If (v[1] = "O")  ;	first only xy
 				ret := this.ps[type "m"] + this.s["c" vec] - this.ps[vec], m := "-"
 
 			Else If (v[1] = "Region")
-				Return this.ps[type] := ret, this.ps[vec] := this.Eval(v[2], type, vec, side) - ret
+				Return ret, this.ps[vec] := this.Eval(v[2], type, vec, side) - ret
 
 			Else If (v[1] = "Debug")
 				MsgBox % "Результат: " ret "`n type: " type  "`n prior word: " v[2]
@@ -216,7 +216,7 @@ Class AutoResize
 			this.s[k] := this.Round.Call(v * (k = "Left" || k = "Right" ? W : H))
 		this.s.WOFF := this.s.Left + this.s.Right + this.ps.xm * 2
 		this.s.HOFF := this.s.Top + this.s.Bottom + this.ps.ym * 2
-		cw := W - this.s.WOFF, ch := H - this.s.HOFF
+		this.s.cw := W - this.s.WOFF, this.s.ch := H - this.s.HOFF
 	}
 	IsCurrentArea(W = "", H = "") {
 		Local
