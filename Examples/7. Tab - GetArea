@@ -9,11 +9,11 @@ Gui, Add, Tab3, vTab gTab AltSubmit hwndhTab +0x400, 1||2|3|4
 GuiControlGet, Tab
 Gui, Tab, 1
 Loop 4
-	Gui, Add, Text, border vLB%A_Index%, Area %A_Index%
+	Gui, Add, Text, center border vLB%A_Index%, Area %A_Index%
 Loop 3
 	Gui, Add, Button, vBT%A_Index%, Button %A_Index%
 Loop 3
-	Gui, Add, GroupBox, vGB%A_Index%, GroupBox %A_Index%
+	Gui, Add, GroupBox, center vGB%A_Index%, GroupBox %A_Index%
 Loop 2
 	Gui, Add, Edit, vED%A_Index%, Edit %A_Index%
 
