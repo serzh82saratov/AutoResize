@@ -9,7 +9,7 @@ Gui, Add, Tab3, vTab gTab AltSubmit hwndhTab +0x400, 1||2|3|4
 GuiControlGet, Tab
 Gui, Tab, 1
 Loop 4
-	Gui, Add, Text, border vLB%A_Index%, LB%A_Index%
+	Gui, Add, Text, border vLB%A_Index%, Area %A_Index%
 Loop 3
 	Gui, Add, Button, vBT%A_Index%, Button %A_Index%
 Loop 3
@@ -34,19 +34,20 @@ ex1.Item("BT3", "xp, y, wp, hp")
 
 ex1.Item("LB4", "x + 5, ym, r350, r600", "Section Save")
 
-ex1.Item("GB1", "x + 5, ys, ro, r200")
-ex1.Item("GB2", "xp, y + 5, wp, yso - y", "Save")
-ex1.Item("GB3", "xs, yso + 5,  xp + wp - xs , ro")
+ex1.Item("GB1", "x + 5, ys, ro, r200") 
+ex1.Item("GB2", "xp > x, y + 5 > yso", "Save")
+ex1.Item("GB3", "xs > x, yso + 5 > z")
 
 ex2 := New AutoResize(1, "xm5 ym5 Ceil")  ;	то что внутри GroupBox 2
 
 ex2.Item("ED1", "xm, ym, r, r500")
-ex2.Item("ED2", "xp, y, wp, ro")
+ex2.Item("ED2", "xp > z, y > z")
+; ex2.Item("ED2", "xp, y, wp, ro")
 
 Loop 10
 	Gui, Add, Edit, vEL%A_Index%, %A_Index%
 
-ex3 := New AutoResize(1, "xm10 ym10")  ;	то что внутри LB4
+ex3 := New AutoResize(1, "xm10 ym10")  ;	то что внутри Area 4
 
 ex3.Item("EL1", "xm, ym, r450, r200")
 ex3.Item("EL2", "o, yp, wp, hp")
@@ -68,7 +69,7 @@ Loop 2
 
 2ex1 := New AutoResize(1, "Ceil")  ;	Вторая вкладка
 2ex1.SetArea(5, 5, 20, 40)
-2ex1.Item("2ED1", "xm, ym, r, r500")
+2ex1.Item("2ED1", "xm, ym, r, r500") 
 2ex1.Item("2ED2", "xp, y, wp, ro")
 
 Tabs := [ex1, 2ex1]
@@ -81,7 +82,7 @@ ResizeTab1:
 	ex1.Resize(GuiWidth, GuiHeight)
 
 	ex1.GetArea("GB2", Left, Top, Right, Bottom)
-	ex2.SetArea(Left, Top + 10, Right, Bottom)
+	ex2.SetArea(Left, Top + 10, Right, Bottom) 
 	ex2.Resize(GuiWidth, GuiHeight)
 
 	ex1.GetArea("LB4", Left, Top, Right, Bottom)
