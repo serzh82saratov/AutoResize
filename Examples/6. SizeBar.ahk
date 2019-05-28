@@ -1,6 +1,7 @@
 #SingleInstance Force
 #NoEnv
 SetBatchLines -1 
+; #Include <AutoResize> 
 
 OnMessage(0x201, "WM_LBUTTONDOWN")
 BarH := 7
