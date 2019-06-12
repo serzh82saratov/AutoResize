@@ -1,8 +1,8 @@
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 3.03
-	;  02:40 27.05.2019
+	;  версия - 3.04
+	;  22:36 12.06.2019
 	;  https://github.com/serzh82saratov/AutoResize
 	;  http://forum.script-coding.com/viewtopic.php?id=14782
 
@@ -10,7 +10,10 @@ Class AutoResize
 
 	__New(Gui, Options = "") {
 		Local
-		Gui, %Gui%:+HWNDhGui
+		If (Options ~= "Foreign")
+			this.Foreign := 1, hGui := Gui
+		Else
+			Gui, %Gui%:+HWNDhGui
 		this.A := {Gui:Gui, hGui:hGui, B:{}}, this.ItemsIndex := {}
 		this.ps := {xm:0, ym:0}, this.s := {Left:0, Top:0, Right:0, Bottom:0}, this.Save := {}
 		this.Round := ObjBindMethod(this, "Return")
@@ -48,7 +51,10 @@ Class AutoResize
 	StrToItem(Control, Options, Ex) {
 		Static SWP_NOZORDER := 0x0004, SWP_NOCOPYBITS := 0x0100
 		Local
-		GuiControlGet, Hwnd, % this.A.Gui ":Hwnd", % Control
+		If this.Foreign
+			Hwnd := Control
+		Else
+			GuiControlGet, Hwnd, % this.A.Gui ":Hwnd", % Control
 		If !Hwnd
 			Throw Exception("Undefined handle for """ Control """, in gui """ this.A.Gui """", -2)
 		a := {CH: Hwnd, CN: Control, F: (Ex ~= "Draw" ? SWP_NOZORDER|SWP_NOCOPYBITS : SWP_NOZORDER), Section: !!(Ex ~= "Section"), Save: !!(Ex ~= "Save")}
