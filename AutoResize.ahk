@@ -1,3 +1,4 @@
+
 Class AutoResize
 {
 	;  автор - serzh82saratov
