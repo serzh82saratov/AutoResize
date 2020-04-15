@@ -1,9 +1,8 @@
-
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 3.04
-	;  22:36 12.06.2019
+	;  версия - 3.05
+	;  17:45 14.04.2020
 	;  https://github.com/serzh82saratov/AutoResize
 	;  http://forum.script-coding.com/viewtopic.php?id=14782
 
@@ -49,16 +48,17 @@ Class AutoResize
 				this.ItemsIndex[k] := v + 1
 		this.ItemsIndex[Control] := Off
 	}
-	StrToItem(Control, Options, Ex) {
+	StrToItem(Control, Options, Ex) {  
 		Static SWP_NOZORDER := 0x0004, SWP_NOCOPYBITS := 0x0100
-		Local
+		Local 
 		If this.Foreign
 			Hwnd := Control
 		Else
 			GuiControlGet, Hwnd, % this.A.Gui ":Hwnd", % Control
 		If !Hwnd
 			Throw Exception("Undefined handle for """ Control """, in gui """ this.A.Gui """", -2)
-		a := {CH: Hwnd, CN: Control, F: (Ex ~= "Draw" ? SWP_NOZORDER|SWP_NOCOPYBITS : SWP_NOZORDER), Section: !!(Ex ~= "Section"), Save: !!(Ex ~= "Save")}
+		a := {CH: Hwnd, CN: Control, F: (Ex ~= "Draw" ? SWP_NOZORDER|SWP_NOCOPYBITS : SWP_NOZORDER)
+				, Section: !!(Ex ~= "Section"), Save: !!(Ex ~= "Save"), IsNoPrevious: !!(Ex ~= "IsNoPrevious")}
 		Options := StrReplace(Options, " ")
 		Options := StrReplace(Options, "-", "+-")
 		Options := StrReplace(Options, "*", "+*")
@@ -117,7 +117,7 @@ Class AutoResize
 			}
 			If Region
 				a[type][Region] := ["Region", oRegion], Region := 0
-		}
+		} 
 		Return a
 	}
 	Resize(W = "", H = "") {
@@ -136,10 +136,11 @@ Class AutoResize
 			this.ps.y := this.Eval(v.y, "y", "h", "h")
 
 			X := this.ps.x + this.s.Left
-			Y := this.ps.y + this.s.Top
-
-			for k2, type in this.types
-				this.ps[type "p"] := this.ps[type]
+			Y := this.ps.y + this.s.Top 
+			
+			If !v.IsNoPrevious
+				for k2, type in this.types
+					this.ps[type "p"] := this.ps[type]
 
 			If v.Save
 				this.Save[v.CN] := {Left: X, Top: Y, Right: W - X - this.ps.w, Bottom: H - Y - this.ps.h, Width: this.ps.w, Height: this.ps.h}
@@ -156,6 +157,7 @@ Class AutoResize
 		Local
 		for k, v in arr
 		{
+			; MsgBox % v[1]  "`n" v[2]  "`n" v[3]  "`n" v[4]
 			If (v[1] = "N")
 				ret += v[3] this.ps[v[2]]
 			Else If (v[1] = "WH")
