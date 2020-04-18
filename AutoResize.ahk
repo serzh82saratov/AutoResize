@@ -1,8 +1,9 @@
+
 Class AutoResize
 {
 	;  автор - serzh82saratov
-	;  версия - 3.05
-	;  17:45 14.04.2020
+	;  версия - 3.06
+	;  18:22 18.04.2020
 	;  https://github.com/serzh82saratov/AutoResize
 	;  http://forum.script-coding.com/viewtopic.php?id=14782
 
@@ -48,9 +49,9 @@ Class AutoResize
 				this.ItemsIndex[k] := v + 1
 		this.ItemsIndex[Control] := Off
 	}
-	StrToItem(Control, Options, Ex) {  
+	StrToItem(Control, Options, Ex) {
 		Static SWP_NOZORDER := 0x0004, SWP_NOCOPYBITS := 0x0100
-		Local 
+		Local
 		If this.Foreign
 			Hwnd := Control
 		Else
@@ -98,7 +99,11 @@ Class AutoResize
 					result := ["Mult", _d]
 				Else If RegExMatch(word, "iS)^\/(?<d>\d+(\.\d+)?)$", _)  ;	Div
 					result := ["Mult", 1 / _d]
-
+				Else If (word ~= "i)^cur$")   ; Num
+				{ 
+					ControlGetPos, curX, curY, curW, curH, , % "ahk_id" a.CH
+					result := ["Num", s cur%type%]
+				} 
 				Else If !Region && (word = ">")  ; Region
 					Region := k2, oRegion := []
 				Else If (word ~= "i)^P$" && Region + 1 = k2)  ; P
@@ -108,16 +113,16 @@ Class AutoResize
 					result := ["Debug", prword]
 				Else
 					Throw Exception("Class AutoResize invalid option """ Format("{:U}", type) """ member: """ word """", -2)
-
+				
 				If !Region
 					a[type].Push(result)
 				Else If (k2 > Region)
 					oRegion.Push(result)
-				prword := word
+				prword := word 
 			}
 			If Region
 				a[type][Region] := ["Region", oRegion], Region := 0
-		} 
+		}
 		Return a
 	}
 	Resize(W = "", H = "") {
@@ -136,8 +141,8 @@ Class AutoResize
 			this.ps.y := this.Eval(v.y, "y", "h", "h")
 
 			X := this.ps.x + this.s.Left
-			Y := this.ps.y + this.s.Top 
-			
+			Y := this.ps.y + this.s.Top
+
 			If !v.IsNoPrevious
 				for k2, type in this.types
 					this.ps[type "p"] := this.ps[type]
@@ -156,7 +161,7 @@ Class AutoResize
 	Eval(arr, type, vec, side, ret = 0) {
 		Local
 		for k, v in arr
-		{
+		{ 
 			; MsgBox % v[1]  "`n" v[2]  "`n" v[3]  "`n" v[4]
 			If (v[1] = "N")
 				ret += v[3] this.ps[v[2]]
